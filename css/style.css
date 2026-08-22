@@ -484,10 +484,7 @@ a { color: var(--accent); }
   font-size: 12px;
   line-height: 1.6;
   color: var(--text-secondary);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  white-space: pre-wrap;
 }
 
 .hc-tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
