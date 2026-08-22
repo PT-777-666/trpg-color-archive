@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>キャラクター色相環ソート</title>
+<meta name="description" content="自分が作成したTRPGキャラクターを色相環とタグで眺める、個人用のキャラクターアーカイブ" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23faf6ef'/%3E%3Cpath fill='%23ffb3ab' d='M94,50 A44,44 0 0 1 72,88.1 L65,76 A30,30 0 0 0 80,50 Z'/%3E%3Cpath fill='%23ffd3a0' d='M72,88.1 A44,44 0 0 1 28,88.1 L35,76 A30,30 0 0 0 65,76 Z'/%3E%3Cpath fill='%23d7e6a0' d='M28,88.1 A44,44 0 0 1 6,50 L20,50 A30,30 0 0 0 35,76 Z'/%3E%3Cpath fill='%23a8ddc0' d='M6,50 A44,44 0 0 1 28,11.9 L35,24 A30,30 0 0 0 20,50 Z'/%3E%3Cpath fill='%23a8c8f0' d='M28,11.9 A44,44 0 0 1 72,11.9 L65,24 A30,30 0 0 0 35,24 Z'/%3E%3Cpath fill='%23d8b8ea' d='M72,11.9 A44,44 0 0 1 94,50 L80,50 A30,30 0 0 0 65,24 Z'/%3E%3Ccircle cx='50' cy='50' r='29' fill='%23faf6ef'/%3E%3Ccircle cx='78' cy='36' r='7' fill='%23e8776b' stroke='%23fff' stroke-width='2.5'/%3E%3Ccircle cx='26' cy='64' r='6' fill='%235b8fd8' stroke='%23fff' stroke-width='2.5'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="blob-field" aria-hidden="true">
+  <svg class="blob blob-a" viewBox="-100 -100 200 200" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="blobGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffd6ae" />
+        <stop offset="100%" stop-color="#ffb0a6" />
+      </linearGradient>
+    </defs>
+    <path fill="url(#blobGradA)" d="M45.7,-58.9C59.5,-50.9,70.6,-37.7,76.4,-22.4C82.2,-7.1,82.7,10.3,76.6,25.3C70.5,40.3,57.8,52.9,43.1,62.6C28.4,72.3,11.7,79.1,-5.6,80.4C-22.9,81.7,-40.8,77.5,-54.6,67.3C-68.4,57.1,-78.1,40.9,-81.8,23.4C-85.5,5.9,-83.2,-12.9,-75.3,-28.6C-67.4,-44.3,-53.9,-56.9,-39,-64.8C-24.1,-72.7,-12.1,-75.9,2.1,-79.4C16.3,-82.9,31.9,-66.9,45.7,-58.9Z" />
+  </svg>
+  <svg class="blob blob-b" viewBox="-100 -100 200 200" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="blobGradB" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#bcd8ff" />
+        <stop offset="100%" stop-color="#d3c4f7" />
+      </linearGradient>
+    </defs>
+    <path fill="url(#blobGradB)" d="M39.4,-51.2C50.8,-42.5,59.4,-30.2,64.7,-16.1C70,-2,72,13.9,66.5,27.6C61,41.3,48,52.8,33.6,60.7C19.2,68.6,3.4,72.9,-12.7,71.8C-28.8,70.7,-45.2,64.2,-56.8,52.6C-68.4,41,-75.2,24.3,-76.9,7.1C-78.6,-10.1,-75.2,-27.8,-65.9,-41.3C-56.6,-54.8,-41.4,-64.1,-25.9,-70.8C-10.4,-77.5,5.4,-81.6,19.8,-77.5C34.2,-73.4,28,-59.9,39.4,-51.2Z" />
+  </svg>
+  <svg class="blob blob-c" viewBox="-100 -100 200 200" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="blobGradC" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffcfe0" />
+        <stop offset="100%" stop-color="#ffe2b8" />
+      </linearGradient>
+    </defs>
+    <path fill="url(#blobGradC)" d="M28.6,-37.4C36.6,-31,42.4,-21.9,46.1,-11.6C49.8,-1.3,51.4,10.2,47.3,19.8C43.2,29.4,33.4,37.1,22.4,42.8C11.4,48.5,-0.8,52.2,-13.1,50.7C-25.4,49.2,-37.8,42.5,-45.1,32C-52.4,21.5,-54.6,7.2,-52.4,-6.1C-50.2,-19.4,-43.6,-31.7,-33.6,-38.9C-23.6,-46.1,-10.2,-48.2,1.6,-50.5C13.4,-52.8,20.6,-43.8,28.6,-37.4Z" />
+  </svg>
+</div>
+
+<div class="app-shell">
+  <header class="app-header">
+    <div class="app-title-block">
+      <h1 class="app-title">キャラクター色相環ソート</h1>
+      <p class="app-usage-label">使い方</p>
+      <p class="app-usage-hint">アイコンにカーソルを合わせると簡易情報、クリックすると詳細が見られます。上部のタグをクリックすると絞り込み(複数選択・AND/OR切替可)。「＋新規キャラクター」から登録できます。</p>
+    </div>
+    <div class="app-header-actions">
+      <button type="button" id="btn-add-character" class="btn btn-primary">＋ 新規キャラクター</button>
+      <button type="button" id="btn-export" class="btn btn-ghost">JSONエクスポート</button>
+      <button type="button" id="btn-import" class="btn btn-ghost">JSONインポート</button>
+      <input type="file" id="import-file-input" accept="application/json" hidden />
+      <button type="button" id="btn-delete-all" class="btn btn-danger btn-small"><svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>全キャラクターを削除</button>
+    </div>
+  </header>
+
+  <nav id="tag-bar" class="tag-bar" aria-label="タグで絞り込み"></nav>
+
+  <main class="wheel-main">
+    <div id="wheel-stage" class="wheel-stage" aria-label="キャラクター色相環"></div>
+    <div id="empty-state" class="empty-state">
+      <p>まだキャラクターが登録されていません。</p>
+      <button type="button" class="btn btn-primary" onclick="CharacterForm.open(null)">最初のキャラクターを追加する</button>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <span id="stats-bar" class="stats-bar"></span>
+    <span class="footer-note">データはこのブラウザ内(IndexedDB)にのみ保存されます。定期的にJSONエクスポートでバックアップしてください。</span>
+  </footer>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/color.js"></script>
+<script src="js/avatar.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/sampleData.js"></script>
+<script src="js/iacharaSync.js"></script>
+<script src="js/hoverCard.js"></script>
+<script src="js/detailModal.js"></script>
+<script src="js/characterForm.js"></script>
+<script src="js/tagFilter.js"></script>
+<script src="js/importExport.js"></script>
+<script src="js/wheel.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
