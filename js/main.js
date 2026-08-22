@@ -22,6 +22,19 @@
     document.getElementById('btn-export').addEventListener('click', () => {
       ImportExport.exportJson();
     });
+    document.getElementById('btn-save-image').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const label = document.getElementById('btn-save-image-label');
+      const original = label.textContent;
+      btn.disabled = true;
+      label.textContent = '画像を作成中…';
+      try {
+        await Wheel.exportImage();
+      } finally {
+        btn.disabled = false;
+        label.textContent = original;
+      }
+    });
     const importInput = document.getElementById('import-file-input');
     document.getElementById('btn-import').addEventListener('click', () => importInput.click());
     importInput.addEventListener('change', async (e) => {

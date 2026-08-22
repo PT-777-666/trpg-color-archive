@@ -237,6 +237,7 @@ a { color: var(--accent-text); }
 }
 
 .btn-small { padding: 6px 12px; font-size: 12px; }
+.btn:disabled { opacity: 0.55; cursor: wait; }
 
 /* ---------- タグバー ---------- */
 

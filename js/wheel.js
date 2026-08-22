@@ -21,12 +21,16 @@
   let stageEl = null;
   let lastLayoutKey = '';
   let lastCharCount = -1;
+  let lastNodes = []; // 直近に計算した位置。画像書き出しで再利用する。
+  let lastStageSize = 600;
+  let lastOrbR = 20;
+
+  const WHEEL_HUE_STOPS = []; // {h, s, l} を共有し、CSSとCanvas書き出しで色がズレないようにする
+  for (let h = 0; h <= 360; h += 30) WHEEL_HUE_STOPS.push(h);
+  const WHEEL_SAT = 77, WHEEL_LIGHT = 71;
 
   function buildConicGradient() {
-    const stops = [];
-    for (let h = 0; h <= 360; h += 30) {
-      stops.push(`hsl(${h},77%,71%) ${(h / 360) * 100}%`);
-    }
+    const stops = WHEEL_HUE_STOPS.map((h) => `hsl(${h},${WHEEL_SAT}%,${WHEEL_LIGHT}%) ${(h / 360) * 100}%`);
     return `conic-gradient(from 0deg, ${stops.join(', ')})`;
   }
 
@@ -180,6 +184,9 @@
     updateFilterVisuals();
     lastLayoutKey = layoutKeyOf(characters);
     lastCharCount = characters.length;
+    lastNodes = nodes;
+    lastStageSize = size;
+    lastOrbR = orbR;
   }
 
   function updateFilterVisuals() {
@@ -223,5 +230,170 @@
     });
   }
 
-  global.Wheel = { mount, rebuild, updateFilterVisuals };
+  // ---------- 色相環を画像として書き出す ----------
+  // 外部ライブラリ(html2canvas等)を使わず、Canvas APIで自前描画する。
+  // 今のビューポート幅ではなく、常に一定の高解像度サイズで組み直すことで、
+  // スマホで開いていても綺麗な画像になるようにしている。
+
+  function loadImageSafe(src) {
+    return new Promise((resolve) => {
+      if (!src) { resolve(null); return; }
+      const img = new Image();
+      const isDataUri = src.startsWith('data:');
+      if (!isDataUri) img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null); // 読み込めない画像はプレースホルダーに任せる
+      img.src = src;
+    });
+  }
+
+  async function exportImage() {
+    const EXPORT_SIZE = 1000; // 色相環そのものの直径(px)
+    const PAD_TOP = 120, PAD_SIDE = 60, PAD_BOTTOM = 60;
+    const scale = 2; // 高解像度書き出し用
+
+    const state = Store.get();
+    const visibleIds = new Set(Store.filteredCharacters().map((c) => c.id));
+    const hasFilter = state.selectedTags.length > 0;
+    const characters = state.characters.filter((c) => !hasFilter || visibleIds.has(c.id));
+    if (characters.length === 0) {
+      alert('保存できるキャラクターがいません。');
+      return null;
+    }
+
+    const orbR = orbRadiusFor(EXPORT_SIZE);
+    const nodes = relax(computeTargets(characters, EXPORT_SIZE), EXPORT_SIZE, orbR);
+    const nodeById = new Map(nodes.map((n) => [n.id, n]));
+
+    try {
+      await document.fonts.load('700 40px "Zen Kaku Gothic New"');
+      await document.fonts.load('500 20px "Zen Kaku Gothic New"');
+    } catch (e) { /* フォント読み込み失敗時はブラウザ既定フォントで続行 */ }
+
+    const images = await Promise.all(characters.map(async (c) => {
+      const hex = ColorUtils.normalizeHex(c.color);
+      const src = c.image || global.Avatar.placeholderDataUri(hex, c.name);
+      let img = await loadImageSafe(src);
+      if (!img) img = await loadImageSafe(global.Avatar.placeholderDataUri(hex, c.name));
+      return { c, img };
+    }));
+
+    const canvasW = EXPORT_SIZE + PAD_SIDE * 2;
+    const canvasH = EXPORT_SIZE + PAD_TOP + PAD_BOTTOM;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasW * scale;
+    canvas.height = canvasH * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    const bgVoid = '#faf6ef';
+    const cx = PAD_SIDE + EXPORT_SIZE / 2;
+    const cy = PAD_TOP + EXPORT_SIZE / 2;
+    const radius = EXPORT_SIZE / 2;
+
+    // 背景(生成り色の紙)
+    ctx.fillStyle = bgVoid;
+    ctx.fillRect(0, 0, canvasW, canvasH);
+
+    // タイトル
+    ctx.fillStyle = '#3d362c';
+    ctx.font = '700 30px "Zen Kaku Gothic New", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('キャラクター色相環ソート', canvasW / 2, 56);
+    if (hasFilter) {
+      ctx.fillStyle = '#906130';
+      ctx.font = '500 15px "Zen Kaku Gothic New", sans-serif';
+      ctx.fillText(`絞り込み: ${state.selectedTags.join(' + ')} (${state.filterMode})`, canvasW / 2, 82);
+    }
+
+    // 色相環の輪(CSSのconic-gradientと同じ色停止点)
+    const conic = ctx.createConicGradient(-Math.PI / 2, cx, cy);
+    WHEEL_HUE_STOPS.forEach((h) => {
+      conic.addColorStop(h / 360, `hsl(${h},${WHEEL_SAT}%,${WHEEL_LIGHT}%)`);
+    });
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fillStyle = conic;
+    ctx.fill();
+
+    // 中心が晴れていくような白いフェード
+    const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.46);
+    voidGrad.addColorStop(0, 'rgba(250,246,239,1)');
+    voidGrad.addColorStop(0.17, 'rgba(250,246,239,1)');
+    voidGrad.addColorStop(0.43, 'rgba(250,246,239,0.42)');
+    voidGrad.addColorStop(1, 'rgba(250,246,239,0)');
+    ctx.fillStyle = voidGrad;
+    ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+    ctx.restore();
+
+    // 環の輪郭を薄く
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.stroke();
+    ctx.restore();
+
+    // キャラクターのオーブ
+    images.forEach(({ c, img }) => {
+      const n = nodeById.get(c.id);
+      if (!n || !img) return;
+      const x = cx - radius + n.x;
+      const y = cy - radius + n.y;
+      const hex = ColorUtils.normalizeHex(c.color);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, orbR, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+
+      // object-fit: cover 相当のクロップ
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      const side = Math.min(iw, ih);
+      const sx = (iw - side) / 2, sy = (ih - side) / 2;
+      ctx.drawImage(img, sx, sy, side, side, x - orbR, y - orbR, orbR * 2, orbR * 2);
+      ctx.restore();
+
+      // 白いリング + カラーの縁取り
+      ctx.beginPath();
+      ctx.arc(x, y, orbR + 1.5, 0, Math.PI * 2);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = bgVoid;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x, y, orbR, 0, Math.PI * 2);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = hex;
+      ctx.stroke();
+    });
+
+    // 日付の透かし
+    ctx.fillStyle = '#8f8371';
+    ctx.font = '500 13px "Zen Kaku Gothic New", sans-serif';
+    ctx.textAlign = 'right';
+    const stamp = new Date().toLocaleDateString('ja-JP');
+    ctx.fillText(stamp, canvasW - PAD_SIDE, canvasH - 22);
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) { alert('画像の生成に失敗しました。'); resolve(null); return; }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `character-hue-wheel_${new Date().toISOString().slice(0, 10)}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        resolve(blob);
+      }, 'image/png');
+    });
+  }
+
+  global.Wheel = { mount, rebuild, updateFilterVisuals, exportImage };
 })(window);
