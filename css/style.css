@@ -484,7 +484,6 @@ a { color: var(--accent); }
   font-size: 12px;
   line-height: 1.6;
   color: var(--text-secondary);
-  white-space: pre-wrap;
 }
 
 .hc-tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
