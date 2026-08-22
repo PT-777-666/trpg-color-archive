@@ -156,7 +156,10 @@ a { color: var(--accent); }
   color: var(--text-faint);
   font-size: 11.5px;
   line-height: 1.7;
-  max-width: 62ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .app-header-actions {
