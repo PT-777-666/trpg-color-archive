@@ -25,12 +25,18 @@
   let lastStageSize = 600;
   let lastOrbR = 20;
 
-  const WHEEL_HUE_STOPS = []; // {h, s, l} を共有し、CSSとCanvas書き出しで色がズレないようにする
+  const WHEEL_HUE_STOPS = []; // 角度の刻み。CSSとCanvas書き出しで共有する。
   for (let h = 0; h <= 360; h += 30) WHEEL_HUE_STOPS.push(h);
-  const WHEEL_SAT = 77, WHEEL_LIGHT = 71;
+
+  // 彩度・明度はテーマごとに変える(テーマの背景の明暗に合わせて見やすい色域にする)。
+  function currentWheelTone() {
+    const colors = global.ThemeManager ? global.ThemeManager.getThemeColors() : null;
+    return colors ? { sat: colors.wheelSat, light: colors.wheelLight } : { sat: 77, light: 71 };
+  }
 
   function buildConicGradient() {
-    const stops = WHEEL_HUE_STOPS.map((h) => `hsl(${h},${WHEEL_SAT}%,${WHEEL_LIGHT}%) ${(h / 360) * 100}%`);
+    const { sat, light } = currentWheelTone();
+    const stops = WHEEL_HUE_STOPS.map((h) => `hsl(${h},${sat}%,${light}%) ${(h / 360) * 100}%`);
     return `conic-gradient(from 0deg, ${stops.join(', ')})`;
   }
 
@@ -221,6 +227,9 @@
     ringEl.style.background = buildConicGradient();
 
     Store.subscribe(() => scheduleRebuildIfNeeded());
+    document.addEventListener('themechange', () => {
+      ringEl.style.background = buildConicGradient();
+    });
 
     const onResize = Utils.debounce(() => rebuild(), 180);
     window.addEventListener('resize', onResize);
@@ -286,22 +295,25 @@
     const ctx = canvas.getContext('2d');
     ctx.scale(scale, scale);
 
-    const bgVoid = '#faf6ef';
+    const theme = global.ThemeManager.getThemeColors();
+    const { sat: wheelSat, light: wheelLight } = currentWheelTone();
+    const bgVoid = theme.bgVoid;
+    const { r: vr, g: vg, b: vb } = ColorUtils.hexToRgb(bgVoid);
     const cx = PAD_SIDE + EXPORT_SIZE / 2;
     const cy = PAD_TOP + EXPORT_SIZE / 2;
     const radius = EXPORT_SIZE / 2;
 
-    // 背景(生成り色の紙)
+    // 背景(テーマの下地色)
     ctx.fillStyle = bgVoid;
     ctx.fillRect(0, 0, canvasW, canvasH);
 
     // タイトル
-    ctx.fillStyle = '#3d362c';
+    ctx.fillStyle = theme.textPrimary;
     ctx.font = '700 30px "Zen Kaku Gothic New", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('キャラクター色相環ソート', canvasW / 2, 56);
     if (hasFilter) {
-      ctx.fillStyle = '#906130';
+      ctx.fillStyle = theme.accentText;
       ctx.font = '500 15px "Zen Kaku Gothic New", sans-serif';
       ctx.fillText(`絞り込み: ${state.selectedTags.join(' + ')} (${state.filterMode})`, canvasW / 2, 82);
     }
@@ -309,7 +321,7 @@
     // 色相環の輪(CSSのconic-gradientと同じ色停止点)
     const conic = ctx.createConicGradient(-Math.PI / 2, cx, cy);
     WHEEL_HUE_STOPS.forEach((h) => {
-      conic.addColorStop(h / 360, `hsl(${h},${WHEEL_SAT}%,${WHEEL_LIGHT}%)`);
+      conic.addColorStop(h / 360, `hsl(${h},${wheelSat}%,${wheelLight}%)`);
     });
     ctx.save();
     ctx.beginPath();
@@ -318,12 +330,12 @@
     ctx.fillStyle = conic;
     ctx.fill();
 
-    // 中心が晴れていくような白いフェード
+    // 中心が晴れていくような、背景色へのフェード
     const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.46);
-    voidGrad.addColorStop(0, 'rgba(250,246,239,1)');
-    voidGrad.addColorStop(0.17, 'rgba(250,246,239,1)');
-    voidGrad.addColorStop(0.43, 'rgba(250,246,239,0.42)');
-    voidGrad.addColorStop(1, 'rgba(250,246,239,0)');
+    voidGrad.addColorStop(0, `rgba(${vr},${vg},${vb},1)`);
+    voidGrad.addColorStop(0.17, `rgba(${vr},${vg},${vb},1)`);
+    voidGrad.addColorStop(0.43, `rgba(${vr},${vg},${vb},0.42)`);
+    voidGrad.addColorStop(1, `rgba(${vr},${vg},${vb},0)`);
     ctx.fillStyle = voidGrad;
     ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
     ctx.restore();
@@ -373,7 +385,7 @@
     });
 
     // 日付の透かし
-    ctx.fillStyle = '#8f8371';
+    ctx.fillStyle = theme.textFaint;
     ctx.font = '500 13px "Zen Kaku Gothic New", sans-serif';
     ctx.textAlign = 'right';
     const stamp = new Date().toLocaleDateString('ja-JP');

@@ -3,11 +3,14 @@
  */
 
 :root {
+  /* ---- クレイ(デフォルト)テーマ ---- */
   --bg-void: #faf6ef;
+  --bg-void-rgb: 250, 246, 239;
   --bg-panel: #ffffff;
   --bg-panel-raised: #fffdf9;
-  --glass-fill: rgba(130, 100, 60, 0.05);
-  --glass-fill-strong: rgba(130, 100, 60, 0.10);
+  --neutral-tint: 130, 100, 60;
+  --glass-fill: rgba(var(--neutral-tint), 0.05);
+  --glass-fill-strong: rgba(var(--neutral-tint), 0.10);
   --glass-border: rgba(100, 80, 50, 0.14);
   --text-primary: #3d362c;
   --text-secondary: #766b5a;
@@ -15,13 +18,48 @@
   --accent: #cb9760;
   --accent-text: #906130;
   --accent-soft: rgba(203, 151, 96, 0.16);
+  --accent-gradient-end: #a9865a;
+  --btn-primary-text: #241c10;
   --danger: #c85a46;
-  --shadow-deep: 0 20px 55px rgba(120, 95, 60, 0.16);
+  --danger-soft: #fdf1ee;
+  --shadow-tint: 120, 95, 60;
+  --highlight-tint: 255, 255, 255;
+  --blob-blend: multiply;
+  --shadow-deep: 0 20px 55px rgba(var(--shadow-tint), 0.16);
   --radius-lg: 22px;
   --radius-md: 14px;
   --radius-sm: 9px;
   --font-serif: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
   --font-sans: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+}
+
+/* ---- メイクパレット(ダーク)テーマ ----
+ * コスメのアイシャドウパレット/コンパクトケースをイメージした、
+ * ダーク×ローズゴールドの配色。トークンを丸ごと差し替えるだけで、
+ * 個々のコンポーネントのCSSは共通のまま見た目が変わる。 */
+:root[data-theme="makeup"] {
+  --bg-void: #1e1a16;
+  --bg-void-rgb: 30, 26, 22;
+  --bg-panel: #2a241d;
+  --bg-panel-raised: #322b23;
+  --neutral-tint: 255, 235, 225;
+  --glass-fill: rgba(var(--neutral-tint), 0.05);
+  --glass-fill-strong: rgba(var(--neutral-tint), 0.09);
+  --glass-border: rgba(245, 220, 210, 0.14);
+  --text-primary: #f3ece3;
+  --text-secondary: #c2b2a2;
+  --text-faint: #9c8b7a;
+  --accent: #e0a8a0;
+  --accent-text: #f3c9c2;
+  --accent-soft: rgba(224, 168, 160, 0.20);
+  --accent-gradient-end: #c98a82;
+  --btn-primary-text: #2a1410;
+  --danger: #ff8a7a;
+  --danger-soft: rgba(255, 138, 122, 0.14);
+  --shadow-tint: 0, 0, 0;
+  --highlight-tint: 255, 235, 225;
+  --blob-blend: screen;
+  --shadow-deep: 0 20px 55px rgba(0, 0, 0, 0.45);
 }
 
 * { box-sizing: border-box; }
@@ -55,7 +93,7 @@ body {
   position: absolute;
   filter: blur(46px);
   opacity: 0.55;
-  mix-blend-mode: multiply;
+  mix-blend-mode: var(--blob-blend);
 }
 
 .blob-a {
@@ -188,16 +226,16 @@ a { color: var(--accent-text); }
 
 :root {
   --clay-raised:
-    6px 8px 16px rgba(90, 70, 40, 0.32),
-    -2px -2px 6px rgba(255, 255, 255, 0.85),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.5);
+    6px 8px 16px rgba(var(--shadow-tint), 0.32),
+    -2px -2px 6px rgba(var(--highlight-tint), 0.85),
+    inset 1px 1px 1px rgba(var(--highlight-tint), 0.5);
   --clay-raised-hover:
-    8px 11px 20px rgba(90, 70, 40, 0.38),
-    -2px -2px 7px rgba(255, 255, 255, 0.9),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.55);
+    8px 11px 20px rgba(var(--shadow-tint), 0.38),
+    -2px -2px 7px rgba(var(--highlight-tint), 0.9),
+    inset 1px 1px 1px rgba(var(--highlight-tint), 0.55);
   --clay-pressed:
-    inset 3px 4px 9px rgba(90, 70, 40, 0.35),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.6);
+    inset 3px 4px 9px rgba(var(--shadow-tint), 0.35),
+    inset -1px -1px 3px rgba(var(--highlight-tint), 0.6);
 }
 
 .btn {
@@ -223,8 +261,8 @@ a { color: var(--accent-text); }
 .btn:active { box-shadow: var(--clay-pressed); transform: translateY(1px); }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), #a9865a);
-  color: #241c10;
+  background: linear-gradient(135deg, var(--accent), var(--accent-gradient-end));
+  color: var(--btn-primary-text);
   font-weight: 600;
 }
 .btn-primary:hover { filter: brightness(1.06); }
@@ -233,7 +271,7 @@ a { color: var(--accent-text); }
 
 .btn-danger {
   color: var(--danger);
-  background: #fdf1ee;
+  background: var(--danger-soft);
 }
 
 .btn-small { padding: 6px 12px; font-size: 12px; }
@@ -306,6 +344,27 @@ a { color: var(--accent-text); }
   cursor: pointer;
   transition: box-shadow 0.2s ease, color 0.2s ease, background 0.2s ease;
 }
+
+.theme-switcher {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--bg-panel);
+  box-shadow: var(--clay-pressed);
+  flex-shrink: 0;
+}
+.theme-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.theme-btn-active { background: var(--bg-panel); color: var(--accent-text); box-shadow: var(--clay-raised); font-weight: 600; }
 .mode-btn-active { background: var(--bg-panel); color: var(--accent-text); box-shadow: var(--clay-raised); }
 
 /* ---------- 色相環ステージ ---------- */
@@ -334,16 +393,16 @@ a { color: var(--accent-text); }
   border-radius: 50%;
   filter: saturate(0.95) brightness(1.02);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.7),
-    0 25px 55px rgba(120, 95, 60, 0.20),
-    inset 0 0 45px rgba(255, 255, 255, 0.55);
+    0 0 0 1px rgba(var(--highlight-tint), 0.7),
+    0 25px 55px rgba(var(--shadow-tint), 0.20),
+    inset 0 0 45px rgba(var(--highlight-tint), 0.55);
 }
 
 .wheel-void {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle at center, var(--bg-void) 0%, var(--bg-void) 8%, rgba(250, 246, 239, 0.88) 20%, rgba(250, 246, 239, 0.42) 34%, transparent 46%);
+  background: radial-gradient(circle at center, var(--bg-void) 0%, var(--bg-void) 8%, rgba(var(--bg-void-rgb), 0.88) 20%, rgba(var(--bg-void-rgb), 0.42) 34%, transparent 46%);
 }
 
 .wheel-rings-deco {
@@ -352,8 +411,8 @@ a { color: var(--accent-text); }
   border-radius: 50%;
   pointer-events: none;
   background:
-    radial-gradient(circle at center, transparent 45.5%, rgba(120, 95, 60, 0.08) 46%, transparent 46.5%),
-    radial-gradient(circle at center, transparent 69.5%, rgba(120, 95, 60, 0.06) 70%, transparent 70.5%);
+    radial-gradient(circle at center, transparent 45.5%, rgba(var(--shadow-tint), 0.08) 46%, transparent 46.5%),
+    radial-gradient(circle at center, transparent 69.5%, rgba(var(--shadow-tint), 0.06) 70%, transparent 70.5%);
 }
 
 .orbs-layer {
@@ -383,7 +442,7 @@ a { color: var(--accent-text); }
   border: 2px solid var(--orb-color, #999);
   box-shadow:
     0 0 0 3px var(--bg-panel),
-    0 4px 12px rgba(120, 95, 60, 0.22),
+    0 4px 12px rgba(var(--shadow-tint), 0.22),
     0 0 16px -3px var(--orb-color, transparent);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   background: var(--orb-color, #f2ece0);
@@ -405,7 +464,7 @@ a { color: var(--accent-text); }
   transition: transform 0.5s cubic-bezier(0.34, 1.76, 0.64, 1), box-shadow 0.25s ease;
   box-shadow:
     0 0 0 3px var(--bg-panel),
-    0 6px 18px rgba(120, 95, 60, 0.28),
+    0 6px 18px rgba(var(--shadow-tint), 0.28),
     0 0 22px 0px var(--orb-color, transparent);
 }
 .orb:hover .orb-glow,
@@ -526,7 +585,7 @@ a { color: var(--accent-text); }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(250, 246, 239, 0.72);
+  background: rgba(var(--bg-void-rgb), 0.72);
   backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
@@ -625,7 +684,7 @@ a { color: var(--accent-text); }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(250, 246, 239, 0.78);
+  background: rgba(var(--bg-void-rgb), 0.78);
   backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
@@ -677,7 +736,7 @@ a { color: var(--accent-text); }
   margin-top: 10px;
   padding: 14px;
   border-radius: var(--radius-md);
-  background: rgba(130, 100, 60, 0.045);
+  background: rgba(var(--neutral-tint), 0.045);
   border: 1px dashed var(--glass-border);
   display: flex;
   flex-direction: column;
@@ -729,7 +788,7 @@ a { color: var(--accent-text); }
   padding: 9px 14px;
   border-radius: 20px;
   border: 1px solid var(--glass-border);
-  background: rgba(130, 100, 60, 0.035);
+  background: rgba(var(--neutral-tint), 0.035);
   color: var(--text-primary);
   font-size: 13.5px;
   resize: vertical;
@@ -739,7 +798,7 @@ a { color: var(--accent-text); }
 .cf-panel input:focus, .cf-panel select:focus, .cf-panel textarea:focus {
   outline: none;
   border-color: var(--accent);
-  background: rgba(130, 100, 60, 0.06);
+  background: rgba(var(--neutral-tint), 0.06);
 }
 
 .cf-color-row { display: flex; gap: 10px; align-items: center; }
@@ -824,7 +883,7 @@ a { color: var(--accent-text); }
 @media (hover: none) {
   .orb:hover .orb-img { transform: none; box-shadow:
       0 0 0 3px var(--bg-panel),
-      0 4px 12px rgba(120, 95, 60, 0.22),
+      0 4px 12px rgba(var(--shadow-tint), 0.22),
       0 0 16px -3px var(--orb-color, transparent); }
   .orb:hover .orb-glow { opacity: 0.22; }
 }
