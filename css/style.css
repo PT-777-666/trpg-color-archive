@@ -804,6 +804,7 @@ a { color: var(--accent); }
 
 @media (max-width: 640px) {
   .app-header { flex-direction: column; align-items: flex-start; }
+  .app-title-block { flex: none; min-width: 0; width: 100%; }
   .app-header-actions { width: 100%; }
   .app-header-actions .btn { flex: 1; }
   .tag-bar-row { flex-direction: column; align-items: stretch; }
