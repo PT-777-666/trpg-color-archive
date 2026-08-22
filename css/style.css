@@ -129,6 +129,11 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--glass-border);
 }
 
+.app-title-block {
+  flex: 1 1 320px;
+  min-width: 260px;
+}
+
 .app-title {
   font-family: var(--font-serif);
   font-weight: 600;
