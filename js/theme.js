@@ -23,14 +23,14 @@
       accentText: '#906130',
       textFaint: '#8f8371'
     },
-    makeup: {
-      label: 'メイクパレット',
-      wheelSat: 85,
-      wheelLight: 52,
-      bgVoid: '#1e1a16',
-      textPrimary: '#f3ece3',
-      accentText: '#f3c9c2',
-      textFaint: '#9c8b7a'
+    silver: {
+      label: '銀夜',
+      wheelSat: 82,
+      wheelLight: 55,
+      bgVoid: '#14161f',
+      textPrimary: '#e4e8f0',
+      accentText: '#d3dce8',
+      textFaint: '#7d859c'
     }
   };
 

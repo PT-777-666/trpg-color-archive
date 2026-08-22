@@ -37,27 +37,28 @@
  * コスメのアイシャドウパレット/コンパクトケースをイメージした、
  * ダーク×ローズゴールドの配色。トークンを丸ごと差し替えるだけで、
  * 個々のコンポーネントのCSSは共通のまま見た目が変わる。 */
-:root[data-theme="makeup"] {
-  --bg-void: #1e1a16;
-  --bg-void-rgb: 30, 26, 22;
-  --bg-panel: #2a241d;
-  --bg-panel-raised: #322b23;
-  --neutral-tint: 255, 235, 225;
+/* 銀夜(ぎんや) — 冷たい藍黒×プラチナシルバーの、静かな夜のテーマ。 */
+:root[data-theme="silver"] {
+  --bg-void: #14161f;
+  --bg-void-rgb: 20, 22, 31;
+  --bg-panel: #1c1f2b;
+  --bg-panel-raised: #242838;
+  --neutral-tint: 220, 228, 240;
   --glass-fill: rgba(var(--neutral-tint), 0.05);
   --glass-fill-strong: rgba(var(--neutral-tint), 0.09);
-  --glass-border: rgba(245, 220, 210, 0.14);
-  --text-primary: #f3ece3;
-  --text-secondary: #c2b2a2;
-  --text-faint: #9c8b7a;
-  --accent: #e0a8a0;
-  --accent-text: #f3c9c2;
-  --accent-soft: rgba(224, 168, 160, 0.20);
-  --accent-gradient-end: #c98a82;
-  --btn-primary-text: #2a1410;
+  --glass-border: rgba(210, 220, 235, 0.14);
+  --text-primary: #e4e8f0;
+  --text-secondary: #a8b0c2;
+  --text-faint: #7d859c;
+  --accent: #b8c4d4;
+  --accent-text: #d3dce8;
+  --accent-soft: rgba(184, 196, 212, 0.20);
+  --accent-gradient-end: #8b98ab;
+  --btn-primary-text: #14161f;
   --danger: #ff8a7a;
   --danger-soft: rgba(255, 138, 122, 0.14);
   --shadow-tint: 0, 0, 0;
-  --highlight-tint: 255, 235, 225;
+  --highlight-tint: 220, 228, 240;
   --blob-blend: screen;
   --shadow-deep: 0 20px 55px rgba(0, 0, 0, 0.45);
 }
