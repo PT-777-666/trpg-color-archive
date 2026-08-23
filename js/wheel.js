@@ -4,8 +4,7 @@
  *  - 角度 = キャラクターの登録カラーの色相(H)。0度(赤)を12時方向に置き、時計回りに進む。
  *  - 半径 = 登録カラーの彩度(S)。彩度が高いほど外周(鮮やかな色の帯)に、
  *    低いほど中心の暗がりに近づく。
- *  - 上記の「本来の位置」を基準に、重なりが出た場合だけ反発シミュレーションで
- *    少しずつ位置をずらす(=色相環の意味を壊さない範囲でのみ視認性を確保)。
+ *  - 色が近いキャラクター同士は重なってもよい(位置の正確さを優先する)。
  *
  * レイアウトは「表示中のキャラクター」ではなく「登録されている全キャラクター」を
  * 常に基準に計算する。タグ絞り込みは位置を変えず、透明度だけを変化させることで
@@ -84,52 +83,6 @@
     });
   }
 
-  function relax(nodes, size, orbR) {
-    const cx = size / 2, cy = size / 2;
-    const minDist = orbR * 2 + 6;
-    const maxAllowedRBase = size / 2 * 0.97;
-    const iterations = 220;
-
-    for (let iter = 0; iter < iterations; iter++) {
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          let dx = b.x - a.x, dy = b.y - a.y;
-          let dist = Math.hypot(dx, dy);
-          if (dist < 0.0001) {
-            const ang = Math.random() * Math.PI * 2;
-            dx = Math.cos(ang) * 0.5;
-            dy = Math.sin(ang) * 0.5;
-            dist = 0.5;
-          }
-          if (dist < minDist) {
-            const overlap = (minDist - dist) / 2;
-            const nx = dx / dist, ny = dy / dist;
-            a.x -= nx * overlap;
-            a.y -= ny * overlap;
-            b.x += nx * overlap;
-            b.y += ny * overlap;
-          }
-        }
-      }
-      // 本来の色相/彩度位置へ弱く引き戻す + 環の外へ出過ぎないようクランプ
-      for (const n of nodes) {
-        n.x += (n.tx - n.x) * 0.028;
-        n.y += (n.ty - n.y) * 0.028;
-        const ddx = n.x - cx, ddy = n.y - cy;
-        const d = Math.hypot(ddx, ddy);
-        const angleDeg = (Math.atan2(ddy, ddx) * 180) / Math.PI;
-        const maxAllowedR = maxAllowedRBase * boundaryFraction(angleDeg);
-        if (d > maxAllowedR) {
-          const k = maxAllowedR / d;
-          n.x = cx + ddx * k;
-          n.y = cy + ddy * k;
-        }
-      }
-    }
-    return nodes;
-  }
-
   function ensureOrbEl(character) {
     let el = orbEls.get(character.id);
     if (el) return el;
@@ -199,7 +152,7 @@
     characters.forEach((c) => paintOrb(ensureOrbEl(c), c));
 
     const orbR = orbRadiusFor(size);
-    const nodes = relax(computeTargets(characters, size), size, orbR);
+    const nodes = computeTargets(characters, size);
     const diameter = orbR * 2;
 
     nodes.forEach((n) => {
@@ -311,7 +264,7 @@
     }
 
     const orbR = orbRadiusFor(EXPORT_SIZE);
-    const nodes = relax(computeTargets(characters, EXPORT_SIZE), EXPORT_SIZE, orbR);
+    const nodes = computeTargets(characters, EXPORT_SIZE);
     const nodeById = new Map(nodes.map((n) => [n.id, n]));
 
     try {
