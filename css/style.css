@@ -1092,6 +1092,13 @@ a { color: var(--accent-text); }
   border-radius: 8px;
   border: 2px solid #0a0a0a;
 }
+/* 入力欄フォーカス時の黄緑は細い線として散らばると目にうるさいので、
+   ボタンやタグの塗りだけに絞り、フォーカス表示は紫に寄せる */
+:root[data-theme="vivid"] .cf-panel input:focus,
+:root[data-theme="vivid"] .cf-panel select:focus,
+:root[data-theme="vivid"] .cf-panel textarea:focus {
+  border-color: var(--accent-text);
+}
 
 /* ---------- レスポンシブ ---------- */
 
