@@ -29,6 +29,8 @@
   --radius-lg: 22px;
   --radius-md: 14px;
   --radius-sm: 9px;
+  /* 色相環の輪・キャラアイコンで共有する六角形の切り抜き形状 */
+  --hex-clip: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 25%, 6.7% 75%);
   --font-serif: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
   --font-sans: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
 }
@@ -429,25 +431,24 @@ a { color: var(--accent-text); }
 .wheel-ring {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  filter: saturate(0.95) brightness(1.02);
+  clip-path: var(--hex-clip);
+  filter: saturate(0.95) brightness(1.02) drop-shadow(0 20px 40px rgba(var(--shadow-tint), 0.20));
   box-shadow:
-    0 0 0 1px rgba(var(--highlight-tint), 0.7),
-    0 25px 55px rgba(var(--shadow-tint), 0.20),
+    inset 0 0 0 1px rgba(var(--highlight-tint), 0.7),
     inset 0 0 45px rgba(var(--highlight-tint), 0.55);
 }
 
 .wheel-void {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
+  clip-path: var(--hex-clip);
   background: radial-gradient(circle at center, var(--bg-void) 0%, var(--bg-void) 8%, rgba(var(--bg-void-rgb), 0.88) 20%, rgba(var(--bg-void-rgb), 0.42) 34%, transparent 46%);
 }
 
 .wheel-rings-deco {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
+  clip-path: var(--hex-clip);
   pointer-events: none;
   background:
     radial-gradient(circle at center, transparent 45.5%, rgba(var(--shadow-tint), 0.08) 46%, transparent 46.5%),
@@ -475,15 +476,13 @@ a { color: var(--accent-text); }
 .orb-img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  clip-path: var(--hex-clip);
   object-fit: cover;
   display: block;
-  border: 2px solid var(--orb-color, #999);
-  box-shadow:
-    0 0 0 3px var(--bg-panel),
-    0 4px 12px rgba(var(--shadow-tint), 0.22),
-    0 0 16px -3px var(--orb-color, transparent);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  filter:
+    drop-shadow(0 4px 10px rgba(var(--shadow-tint), 0.22))
+    drop-shadow(0 0 10px var(--orb-color, transparent));
+  transition: transform 0.25s ease, filter 0.25s ease;
   background: var(--orb-color, #f2ece0);
 }
 
@@ -500,11 +499,10 @@ a { color: var(--accent-text); }
 .orb:hover .orb-img,
 .orb:focus-visible .orb-img {
   transform: translateY(-5px) scale(1.18);
-  transition: transform 0.5s cubic-bezier(0.34, 1.76, 0.64, 1), box-shadow 0.25s ease;
-  box-shadow:
-    0 0 0 3px var(--bg-panel),
-    0 6px 18px rgba(var(--shadow-tint), 0.28),
-    0 0 22px 0px var(--orb-color, transparent);
+  transition: transform 0.5s cubic-bezier(0.34, 1.76, 0.64, 1), filter 0.25s ease;
+  filter:
+    drop-shadow(0 6px 14px rgba(var(--shadow-tint), 0.28))
+    drop-shadow(0 0 14px var(--orb-color, transparent));
 }
 .orb:hover .orb-glow,
 .orb:focus-visible .orb-glow { opacity: 0.45; }
@@ -1069,9 +1067,8 @@ a { color: var(--accent-text); }
 
 /* タッチデバイスではhoverによる強調を無効化し、tapのみで反応させる */
 @media (hover: none) {
-  .orb:hover .orb-img { transform: none; box-shadow:
-      0 0 0 3px var(--bg-panel),
-      0 4px 12px rgba(var(--shadow-tint), 0.22),
-      0 0 16px -3px var(--orb-color, transparent); }
+  .orb:hover .orb-img { transform: none; filter:
+      drop-shadow(0 4px 10px rgba(var(--shadow-tint), 0.22))
+      drop-shadow(0 0 10px var(--orb-color, transparent)); }
   .orb:hover .orb-glow { opacity: 0.22; }
 }

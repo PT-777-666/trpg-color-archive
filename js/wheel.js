@@ -44,14 +44,24 @@
     return ColorUtils.clamp(size * 0.034, 15, 27);
   }
 
+  // 色相環の輪が六角形なので、外周までの距離は角度によって変わる
+  // (頂点方向ではradius、辺の中点方向では約0.866*radiusまでしかない)。
+  // その比率を返し、配置計算で「輪のすぐ内側」を正しく再現するために使う。
+  function hexBoundaryFraction(angleDeg) {
+    const apothemRatio = Math.cos(Math.PI / 6); // 0.866...
+    let t = ((angleDeg + 90) % 60 + 60) % 60 - 30;
+    return apothemRatio / Math.cos((t * Math.PI) / 180);
+  }
+
   function computeTargets(characters, size) {
     const cx = size / 2, cy = size / 2;
-    const maxR = size / 2 * 0.93;
+    const baseMaxR = size / 2 * 0.93;
     const minR = size / 2 * 0.10;
     return characters.map((c) => {
       const { h, s } = ColorUtils.hexToHsl(c.color);
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
+      const maxR = baseMaxR * hexBoundaryFraction(angleDeg);
       const r = minR + (ColorUtils.clamp(s, 0, 100) / 100) * (maxR - minR);
       return {
         id: c.id,
@@ -66,7 +76,7 @@
   function relax(nodes, size, orbR) {
     const cx = size / 2, cy = size / 2;
     const minDist = orbR * 2 + 6;
-    const maxAllowedR = size / 2 * 0.97;
+    const maxAllowedRBase = size / 2 * 0.97;
     const iterations = 220;
 
     for (let iter = 0; iter < iterations; iter++) {
@@ -97,6 +107,8 @@
         n.y += (n.ty - n.y) * 0.028;
         const ddx = n.x - cx, ddy = n.y - cy;
         const d = Math.hypot(ddx, ddy);
+        const angleDeg = (Math.atan2(ddy, ddx) * 180) / Math.PI;
+        const maxAllowedR = maxAllowedRBase * hexBoundaryFraction(angleDeg);
         if (d > maxAllowedR) {
           const k = maxAllowedR / d;
           n.x = cx + ddx * k;
@@ -244,6 +256,18 @@
   // 今のビューポート幅ではなく、常に一定の高解像度サイズで組み直すことで、
   // スマホで開いていても綺麗な画像になるようにしている。
 
+  // ライブ表示の --hex-clip と同じ向き(頂点が真上)の六角形パスを作る。
+  function hexagonPath(ctx, cx, cy, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = ((-90 + i * 60) * Math.PI) / 180;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+  }
+
   function loadImageSafe(src) {
     return new Promise((resolve) => {
       if (!src) { resolve(null); return; }
@@ -324,9 +348,7 @@
       conic.addColorStop(h / 360, `hsl(${h},${wheelSat}%,${wheelLight}%)`);
     });
     ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    ctx.closePath();
+    hexagonPath(ctx, cx, cy, radius);
     ctx.fillStyle = conic;
     ctx.fill();
 
@@ -342,8 +364,7 @@
 
     // 環の輪郭を薄く
     ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    hexagonPath(ctx, cx, cy, radius);
     ctx.lineWidth = 2;
     ctx.strokeStyle = 'rgba(255,255,255,0.7)';
     ctx.stroke();
@@ -358,9 +379,7 @@
       const hex = ColorUtils.normalizeHex(c.color);
 
       ctx.save();
-      ctx.beginPath();
-      ctx.arc(x, y, orbR, 0, Math.PI * 2);
-      ctx.closePath();
+      hexagonPath(ctx, x, y, orbR);
       ctx.clip();
 
       // object-fit: cover 相当のクロップ
@@ -370,15 +389,13 @@
       ctx.drawImage(img, sx, sy, side, side, x - orbR, y - orbR, orbR * 2, orbR * 2);
       ctx.restore();
 
-      // 白いリング + カラーの縁取り
-      ctx.beginPath();
-      ctx.arc(x, y, orbR + 1.5, 0, Math.PI * 2);
+      // 背景色のリング + カラーの縁取り
+      hexagonPath(ctx, x, y, orbR + 1.5);
       ctx.lineWidth = 3;
       ctx.strokeStyle = bgVoid;
       ctx.stroke();
 
-      ctx.beginPath();
-      ctx.arc(x, y, orbR, 0, Math.PI * 2);
+      hexagonPath(ctx, x, y, orbR);
       ctx.lineWidth = 2;
       ctx.strokeStyle = hex;
       ctx.stroke();
