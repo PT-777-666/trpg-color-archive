@@ -67,7 +67,6 @@
   --danger-soft: #ffe5e5;
   --shadow-tint: 0, 0, 0;
   --highlight-tint: 0, 0, 0;
-  --blob-blend: soft-light;
   --shadow-deep: 8px 8px 0 #0a0a0a;
   --radius-lg: 10px;
   --radius-md: 8px;
@@ -1026,6 +1025,11 @@ a { color: var(--accent-text); }
 /* ---------- ビビッドテーマ専用の構造上書き ----------
  * 六角形のclip-pathをやめて角丸スクエアにし、ボタンやカードには
  * 太めの黒枠を足す。色トークンだけでは表現できない部分をここでまとめる。 */
+
+/* ぼかしの効いた背景ブロブは、くっきりしたフラットな雰囲気と合わないので消す */
+:root[data-theme="vivid"] .blob-field {
+  display: none;
+}
 
 :root[data-theme="vivid"] .wheel-ring,
 :root[data-theme="vivid"] .wheel-void,

@@ -27,8 +27,8 @@
     },
     vivid: {
       label: 'ビビッド',
-      wheelSat: 80,
-      wheelLight: 62,
+      wheelSat: 92,
+      wheelLight: 58,
       bgVoid: '#6C4DF5',
       wheelVoid: '#ffffff',
       textPrimary: '#ffffff',
