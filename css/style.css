@@ -426,16 +426,6 @@ a { color: var(--accent-text); }
   background: radial-gradient(circle at center, var(--wheel-void) 0%, var(--wheel-void) 8%, rgba(var(--wheel-void-rgb), 0.88) 20%, rgba(var(--wheel-void-rgb), 0.42) 34%, transparent 46%);
 }
 
-.wheel-rings-deco {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at center, transparent 45.5%, rgba(var(--shadow-tint), 0.08) 46%, transparent 46.5%),
-    radial-gradient(circle at center, transparent 69.5%, rgba(var(--shadow-tint), 0.06) 70%, transparent 70.5%);
-}
-
 .orbs-layer {
   position: absolute;
   inset: 0;
@@ -1036,8 +1026,7 @@ a { color: var(--accent-text); }
 }
 
 :root[data-theme="vivid"] .wheel-ring,
-:root[data-theme="vivid"] .wheel-void,
-:root[data-theme="vivid"] .wheel-rings-deco {
+:root[data-theme="vivid"] .wheel-void {
   border-radius: 10px;
 }
 :root[data-theme="vivid"] .wheel-ring {
