@@ -948,6 +948,16 @@ a { color: var(--accent-text); }
 .cf-color-row input[type="text"] { font-family: monospace; border-radius: 20px; }
 
 .cf-hint { font-size: 11px; color: var(--text-faint); line-height: 1.6; margin-top: 6px; }
+.cf-inline-link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent-text);
+  font-size: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .cf-field-pair, .cf-field-trio { display: grid; gap: 12px; }
 .cf-field-pair { grid-template-columns: 1fr 1fr; }

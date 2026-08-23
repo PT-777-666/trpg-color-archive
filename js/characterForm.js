@@ -186,6 +186,7 @@
           <a href="#" id="cf-bookmarklet" class="btn btn-primary btn-small cf-bookmarklet" title="ブックマークバーにドラッグしてください">📥 いあきゃら取り込み</a>
           <textarea id="cf-iachara-paste" rows="4" placeholder="ここにコピーしたJSONを貼り付け"></textarea>
           <button type="button" id="cf-iachara-apply" class="btn btn-ghost btn-small">反映する</button>
+          <p class="cf-hint">複数人まとめて登録したい場合は、<button type="button" id="cf-open-bulk" class="cf-inline-link">一括登録</button>が便利です。</p>
         </div>
       </div>
 
@@ -337,6 +338,11 @@
     formEl.querySelector('#cf-iachara-toggle').addEventListener('click', () => {
       const panel = formEl.querySelector('#cf-iachara-panel');
       panel.hidden = !panel.hidden;
+    });
+
+    formEl.querySelector('#cf-open-bulk').addEventListener('click', () => {
+      close();
+      global.BulkImport.open();
     });
 
     formEl.querySelector('#cf-iachara-apply').addEventListener('click', async () => {

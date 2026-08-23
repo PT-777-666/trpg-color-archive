@@ -19,9 +19,6 @@
     document.getElementById('btn-add-character').addEventListener('click', () => {
       CharacterForm.open(null);
     });
-    document.getElementById('btn-bulk-import').addEventListener('click', () => {
-      BulkImport.open();
-    });
     document.getElementById('btn-export').addEventListener('click', () => {
       ImportExport.exportJson();
     });
