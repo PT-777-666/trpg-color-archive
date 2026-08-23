@@ -3,6 +3,8 @@
  * (フォームのような「保存」操作は挟まない)。タグの絞り込み状態には影響されず、
  * 常に登録済み全員を表示する(タグが付いていない子も見失わないため)。
  * 並び順は色相環と揃う「色順」と、探しやすい「名前順」を切り替えられる。
+ * 各行の▾を押すと、ホバーカードと同じ内容(シナリオ・HO・紹介文など)を
+ * その場で開閉できる(展開状態はexpandedIdsで保持し、再描画をまたいで残す)。
  */
 (function (global) {
   'use strict';
@@ -10,9 +12,33 @@
   let containerEl = null;
   let lastFocused = null; // { charId, field: 'tag' | 'color' }
   let sortMode = 'hue'; // 'hue' | 'name'
+  let expandedIds = new Set();
 
   function tagChipHtml(tag, charId) {
     return `<span class="tag-chip" data-tag="${Utils.escapeHtml(tag)}">${Utils.escapeHtml(tag)}<button type="button" class="tag-chip-remove" data-char="${charId}" data-tag="${Utils.escapeHtml(tag)}" aria-label="削除">×</button></span>`;
+  }
+
+  function detailFieldRow(label, value) {
+    if (!value) return '';
+    return `<div class="hc-row"><span class="hc-label">${label}</span><span class="hc-value">${Utils.escapeHtml(value)}</span></div>`;
+  }
+
+  function detailHtml(c) {
+    const rows = [
+      detailFieldRow('シナリオ', c.scenario),
+      detailFieldRow('HO', c.ho),
+      detailFieldRow('年齢', c.age),
+      detailFieldRow('職業', c.occupation),
+      detailFieldRow('性別', c.gender),
+      detailFieldRow('身長', c.height)
+    ].join('');
+    return `
+      <div class="lv-detail">
+        ${rows ? `<div class="lv-detail-rows">${rows}</div>` : ''}
+        ${c.description ? `<p class="lv-detail-desc">${Utils.escapeHtml(c.description)}</p>` : ''}
+        ${!rows && !c.description ? '<p class="lv-detail-empty">詳細情報はまだありません。</p>' : ''}
+      </div>
+    `;
   }
 
   async function persistUpdate(character, patch) {
@@ -61,8 +87,10 @@
         const img = c.image || global.Avatar.placeholderDataUri(hex, c.name);
         const tags = c.tags || [];
         const sub = [c.occupation, c.system].filter(Boolean).join(' / ');
+        const expanded = expandedIds.has(c.id);
         return `
           <div class="lv-row" data-id="${c.id}">
+            <button type="button" class="lv-expand-toggle${expanded ? ' lv-expand-toggle-open' : ''}" data-id="${c.id}" aria-label="詳細を開閉" aria-expanded="${expanded}">▾</button>
             <label class="lv-avatar-wrap" title="クリックして画像を変更">
               <img class="lv-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
               <span class="lv-avatar-edit-badge" aria-hidden="true">✎</span>
@@ -77,10 +105,19 @@
               ${tags.map((t) => tagChipHtml(t, c.id)).join('')}
               <input type="text" class="lv-tag-input" list="lv-tag-suggestions" placeholder="タグを入力してEnter" data-id="${c.id}" />
             </div>
+            ${expanded ? detailHtml(c) : ''}
           </div>
         `;
       }).join('')}
     `;
+
+    containerEl.querySelectorAll('.lv-expand-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+        render();
+      });
+    });
 
     containerEl.querySelectorAll('.lv-sort-toggle .mode-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
