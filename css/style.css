@@ -19,7 +19,12 @@
   --accent-text: #906130;
   --accent-soft: rgba(203, 151, 96, 0.16);
   --accent-gradient-end: #a9865a;
-  --btn-primary-text: #241c10;
+  /* 主役ボタン(新規キャラクター等)だけは--accentと切り離し、専用のグラデーションにする。
+     参考にしたポスターのティール×ピンクは白文字だとコントラスト不足だったため、
+     同系統でやや深みのある色に調整している */
+  --btn-primary-grad-start: #268f84;
+  --btn-primary-grad-end: #c85a87;
+  --btn-primary-text: #ffffff;
   --danger: #c85a46;
   --danger-soft: #fdf1ee;
   --shadow-tint: 120, 95, 60;
@@ -65,6 +70,8 @@
   --accent-text: #6C4DF5;
   --accent-soft: rgba(108, 77, 245, 0.14);
   --accent-gradient-end: #D4FF3D;
+  --btn-primary-grad-start: var(--accent);
+  --btn-primary-grad-end: var(--accent-gradient-end);
   --btn-primary-text: #0a0a0a;
   --danger: #d92b2b;
   --danger-soft: #ffe5e5;
@@ -292,7 +299,7 @@ a { color: var(--accent-text); }
 .btn-primary {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--accent), var(--accent-gradient-end));
+  background: linear-gradient(135deg, var(--btn-primary-grad-start), var(--btn-primary-grad-end));
   color: var(--btn-primary-text);
   font-weight: 600;
   box-shadow: var(--clay-raised);
