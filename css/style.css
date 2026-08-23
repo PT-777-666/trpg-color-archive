@@ -1274,86 +1274,66 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
   border-radius: 8px;
 }
 /* AND/OR・色相環⇄一覧・色順名前順・テーマ切り替えのセグメントコントロールは、
-   ビビッドだけピルのくぼみ表現をやめてタブ/アンダーライン式にする。
-   このトグルは白いパネルではなく紫のvoidに直接乗るので、--text-faintや
-   --accent-textではなく「void上の文字色」トークンを使う(でないと
-   紫の背景に紫や暗いグレーの文字が乗ってほぼ見えなくなる)。 */
+   ビビッドは他のボタン(新規キャラクター等)と同じ「太枠+ベタッとしたハードシャドウ」に揃える。
+   選択中はライムで塗りつぶし、影を消して押し込まれたように見せる */
 :root[data-theme="vivid"] .tag-mode-toggle,
 :root[data-theme="vivid"] .theme-switcher {
   background: none;
   box-shadow: none;
   border: none;
   border-radius: 0;
-  border-bottom: 2px solid var(--body-on-void);
-  padding: 0 0 8px;
-  gap: 18px;
+  padding: 0;
+  gap: 8px;
 }
 :root[data-theme="vivid"] .mode-btn,
 :root[data-theme="vivid"] .theme-btn {
-  background: none;
-  box-shadow: none;
-  border-radius: 0;
-  padding: 2px 0;
-  position: relative;
+  border: 2.5px solid #0a0a0a;
+  border-radius: 8px;
+  background: transparent;
   color: var(--body-on-void);
+  padding: 7px 16px;
+  font-weight: 700;
+  box-shadow: 3px 3px 0 #0a0a0a;
+  transition: box-shadow 0.15s ease, transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+:root[data-theme="vivid"] .mode-btn:hover,
+:root[data-theme="vivid"] .theme-btn:hover {
+  box-shadow: 5px 5px 0 #0a0a0a;
 }
 :root[data-theme="vivid"] .mode-btn-active,
-:root[data-theme="vivid"] .theme-btn-active {
-  background: none;
-  box-shadow: none;
-  font-weight: 700;
-  color: var(--title-on-void);
-}
-:root[data-theme="vivid"] .mode-btn-active::after,
-:root[data-theme="vivid"] .theme-btn-active::after {
-  content: '';
-  background: var(--title-on-void);
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -10px;
-  height: 2px;
+:root[data-theme="vivid"] .theme-btn-active,
+:root[data-theme="vivid"] .mode-btn-active:hover,
+:root[data-theme="vivid"] .theme-btn-active:hover {
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow: 0 0 0 #0a0a0a;
+  transform: translate(3px, 3px);
 }
 :root[data-theme="vivid"] .tag-pill,
 :root[data-theme="vivid"] .tag-chip {
   border: 2px solid #0a0a0a;
 }
+:root[data-theme="vivid"] .tag-pill-active {
+  background: var(--accent);
+  color: #0a0a0a;
+}
 
-/* 色相環⇄一覧の大きいトグルだけは、タブ/アンダーライン式ではなく
-   他のボタン(新規キャラクター等)と同じ「太枠+ベタッとしたハードシャドウ」に揃える。
-   選択中はライムで塗りつぶし、影を消して押し込まれたように見せる */
+/* 色相環⇄一覧の大きいトグルだけは文字とパディングを拡大 */
 :root[data-theme="vivid"] .view-toggle-large {
   gap: 10px;
-  padding: 0;
-  box-shadow: none;
 }
 :root[data-theme="vivid"] .view-toggle-large .mode-btn {
-  border: 2.5px solid #0a0a0a;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--title-on-void);
   padding: 12px 30px;
   font-size: 16px;
-  font-weight: 700;
   box-shadow: 4px 4px 0 #0a0a0a;
-  transition: box-shadow 0.15s ease, transform 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 :root[data-theme="vivid"] .view-toggle-large .mode-btn:hover {
   box-shadow: 6px 6px 0 #0a0a0a;
 }
 :root[data-theme="vivid"] .view-toggle-large .mode-btn-active,
 :root[data-theme="vivid"] .view-toggle-large .mode-btn-active:hover {
-  background: var(--accent);
-  color: var(--accent-text);
   box-shadow: 0 0 0 #0a0a0a;
   transform: translate(4px, 4px);
-}
-:root[data-theme="vivid"] .view-toggle-large .mode-btn-active::after {
-  content: none;
-}
-:root[data-theme="vivid"] .tag-pill-active {
-  background: var(--accent);
-  color: #0a0a0a;
 }
 
 :root[data-theme="vivid"] .hover-card,
