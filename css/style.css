@@ -41,8 +41,9 @@
   --label-on-void: var(--accent-text);
   --body-on-void: var(--text-faint);
   --secondary-on-void: var(--text-secondary);
-  /* 背景にうっすら方眼を敷く(試験導入)。目立たない程度の薄さに留める */
-  --grid-line: rgba(61, 54, 44, 0.05);
+  /* 方眼グリッドはビビッドのネオブルータリズムには合うが、パステルの
+     柔らかい雰囲気には不要と判断し、パステルでは表示しない */
+  --grid-line: transparent;
 }
 
 /* ビビッド — 紫の背景に黒ベタ枠とライムイエロー。Web3/NFTマーケットプレイス風の
