@@ -48,7 +48,10 @@
   <header class="app-header">
     <div class="app-title-block">
       <h1 class="app-title">キャラクター色相環ソート</h1>
-      <button type="button" id="btn-usage-guide" class="app-usage-btn">💡 使い方を見る</button>
+      <div class="ug-wrap">
+        <button type="button" id="btn-usage-guide" class="app-usage-btn" aria-expanded="false">💡 使い方を見る <span class="app-usage-btn-arrow" aria-hidden="true">▾</span></button>
+        <div id="ug-dropdown" class="ug-dropdown" hidden></div>
+      </div>
     </div>
     <div class="app-header-actions">
       <button type="button" id="btn-add-character" class="btn btn-primary">＋ 新規キャラクター</button>

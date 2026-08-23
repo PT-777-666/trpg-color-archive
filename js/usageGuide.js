@@ -1,11 +1,13 @@
-/* usageGuide.js — 「使い方」ボタンを押すと開く、キャラクター登録から保存までの
- * 一連の流れを説明するモーダル。常時表示すると場所を取るため、必要な時だけ開く形にした。
+/* usageGuide.js — 「使い方を見る」ボタンを押すと直下に開くプルダウン形式の説明。
+ * キャラクター登録から画像として保存するまでの一連の流れを、常時表示せず
+ * 必要な時だけ開いて確認できるようにしたもの。
  */
 (function (global) {
   'use strict';
 
-  let overlayEl = null;
+  let btnEl = null;
   let panelEl = null;
+  let isOpen = false;
 
   const STEPS = [
     {
@@ -42,21 +44,33 @@
       </li>
     `).join('');
     return `
-      <button type="button" class="ug-close" aria-label="閉じる">×</button>
-      <h2 class="ug-title">使い方</h2>
       <p class="ug-lede">キャラクターの登録から画像として保存するまでの流れです。</p>
       <ol class="ug-steps">${steps}</ol>
     `;
   }
 
   function open() {
-    overlayEl.classList.add('ug-open');
+    isOpen = true;
+    panelEl.hidden = false;
+    btnEl.setAttribute('aria-expanded', 'true');
+    document.addEventListener('click', onOutsideClick);
     document.addEventListener('keydown', onKeydown);
   }
 
   function close() {
-    overlayEl.classList.remove('ug-open');
+    isOpen = false;
+    panelEl.hidden = true;
+    btnEl.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onOutsideClick);
     document.removeEventListener('keydown', onKeydown);
+  }
+
+  function toggle() {
+    if (isOpen) close(); else open();
+  }
+
+  function onOutsideClick(e) {
+    if (!panelEl.contains(e.target) && e.target !== btnEl) close();
   }
 
   function onKeydown(e) {
@@ -64,15 +78,14 @@
   }
 
   function mount() {
-    overlayEl = document.createElement('div');
-    overlayEl.className = 'ug-overlay';
-    overlayEl.innerHTML = '<div class="ug-panel"></div>';
-    document.body.appendChild(overlayEl);
-    panelEl = overlayEl.querySelector('.ug-panel');
+    btnEl = document.getElementById('btn-usage-guide');
+    panelEl = document.getElementById('ug-dropdown');
     panelEl.innerHTML = markup();
-    panelEl.querySelector('.ug-close').addEventListener('click', close);
-    overlayEl.addEventListener('click', (e) => { if (e.target === overlayEl) close(); });
+    btnEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggle();
+    });
   }
 
-  global.UsageGuide = { mount, open, close };
+  global.UsageGuide = { mount, open, close, toggle };
 })(window);

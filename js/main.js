@@ -16,9 +16,6 @@
   }
 
   function wireHeaderActions() {
-    document.getElementById('btn-usage-guide').addEventListener('click', () => {
-      UsageGuide.open();
-    });
     document.getElementById('btn-add-character').addEventListener('click', () => {
       CharacterForm.open(null);
     });
