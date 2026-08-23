@@ -4,10 +4,7 @@
  *  - 角度 = キャラクターの登録カラーの色相(H)。0度(赤)を12時方向に置き、時計回りに進む。
  *  - 半径 = 登録カラーの彩度(S)のみ。彩度が高いほど外周(鮮やかな色の帯)に、
  *    低いほど中心の暗がりに近づく。
- *  - オーブの大きさ = 登録カラーの明度(L)。明るい色ほど大きく、暗い色ほど
- *    小さく表示する。位置(角度・半径)だけでは色相・彩度・明度の3軸を
- *    同時に表せない(2次元の位置は独立した軸を2つまでしか運べない)ため、
- *    明度だけは大きさという別の見た目で表現している。
+ *  - オーブの大きさは全キャラクター共通(明度による大小はつけない)。
  *  - 色が近いキャラクター同士は重なってもよい(位置の正確さを優先する)。
  *
  * レイアウトは「表示中のキャラクター」ではなく「登録されている全キャラクター」を
@@ -44,11 +41,6 @@
     return ColorUtils.clamp(size * 0.034, 15, 27);
   }
 
-  // 明度(L)をオーブの大きさの倍率に変換する。暗い色は小さく、明るい色は大きく。
-  function lightnessSizeFactor(l) {
-    return 0.7 + 0.6 * (ColorUtils.clamp(l, 0, 100) / 100); // 0.7倍(暗)〜1.3倍(明)
-  }
-
   function currentShape() {
     const colors = global.ThemeManager ? global.ThemeManager.getThemeColors() : null;
     return (colors && colors.shape) || 'circle';
@@ -63,14 +55,13 @@
     const baseMaxR = size / 2 * 0.93;
     const minR = size / 2 * 0.10;
     return characters.map((c) => {
-      const { h, s, l } = ColorUtils.hexToHsl(c.color);
+      const { h, s } = ColorUtils.hexToHsl(c.color);
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
       const satFrac = ColorUtils.clamp(s, 0, 100) / 100;
       const r = minR + satFrac * (baseMaxR - minR);
       return {
         id: c.id,
-        l,
         tx: cx + r * Math.cos(angleRad),
         ty: cy + r * Math.sin(angleRad),
         x: cx + r * Math.cos(angleRad),
@@ -147,14 +138,13 @@
 
     characters.forEach((c) => paintOrb(ensureOrbEl(c), c));
 
-    const baseOrbR = orbRadiusFor(size);
+    const orbR = orbRadiusFor(size);
     const nodes = computeTargets(characters, size);
+    const diameter = orbR * 2;
 
     nodes.forEach((n) => {
       const el = orbEls.get(n.id);
       if (!el) return;
-      const orbR = baseOrbR * lightnessSizeFactor(n.l);
-      const diameter = orbR * 2;
       el.style.width = diameter + 'px';
       el.style.height = diameter + 'px';
       el.style.transform = `translate(${n.x - orbR}px, ${n.y - orbR}px)`;
@@ -258,7 +248,7 @@
       return null;
     }
 
-    const baseOrbR = orbRadiusFor(EXPORT_SIZE);
+    const orbR = orbRadiusFor(EXPORT_SIZE);
     const nodes = computeTargets(characters, EXPORT_SIZE);
     const nodeById = new Map(nodes.map((n) => [n.id, n]));
 
@@ -349,7 +339,6 @@
       const hex = ColorUtils.normalizeHex(c.color);
 
       const isSquare = currentShape() === 'square';
-      const orbR = baseOrbR * lightnessSizeFactor(n.l);
       const orbCornerR = orbR * 0.3;
 
       ctx.save();
