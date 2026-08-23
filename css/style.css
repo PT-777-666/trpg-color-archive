@@ -271,9 +271,9 @@ a { color: var(--accent-text); }
 .footer-notes {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
 }
-.footer-note { line-height: 1.7; opacity: 0.85; }
+.footer-note { margin: 0; line-height: 1.7; opacity: 0.85; }
 .footer-notes-title {
   margin: 0;
   font-size: 11px;
@@ -1460,19 +1460,12 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 :root[data-theme="vivid"] .btn-primary::before {
   content: none;
 }
-/* パステルと同じ考え方で、ビビッドも主役(Filled)と脇役(Outline)の強弱をつける。
-   脇役はハードシャドウをやめて枠線だけの見た目にし、破壊的操作(Destructive)は
-   黒枠の代わりに危険色の枠にして見分けやすくする */
-:root[data-theme="vivid"] .btn-ghost {
-  box-shadow: none;
-}
+/* パステルと同じ考え方で主役(Filled)と脇役(Outline)の強弱を試したが、
+   ビビッドの脇役ボタン(バックアップ保存など)は影を消すと周りのハード
+   シャドウ表現から浮いて「透けて」見えてしまうため、影は他のボタンと
+   揃えたまま維持する(破壊的操作だけ枠色で見分ける) */
 :root[data-theme="vivid"] .btn-ghost:hover {
-  box-shadow: none;
   background: rgba(10, 10, 10, 0.06);
-  transform: none;
-}
-:root[data-theme="vivid"] .btn-ghost:active {
-  transform: none;
 }
 :root[data-theme="vivid"] .btn-danger {
   border-color: var(--danger);

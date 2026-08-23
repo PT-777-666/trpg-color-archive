@@ -394,13 +394,6 @@
       }
     });
 
-    // 日付の透かし
-    ctx.fillStyle = theme.textFaint;
-    ctx.font = '500 13px "Zen Kaku Gothic New", sans-serif';
-    ctx.textAlign = 'right';
-    const stamp = new Date().toLocaleDateString('ja-JP');
-    ctx.fillText(stamp, canvasW - PAD_SIDE, canvasH - 22);
-
     return new Promise((resolve) => {
       canvas.toBlob((blob) => {
         if (!blob) { alert('画像の生成に失敗しました。'); resolve(null); return; }
