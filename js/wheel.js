@@ -2,8 +2,10 @@
  *
  * 配置方針:
  *  - 角度 = キャラクターの登録カラーの色相(H)。0度(赤)を12時方向に置き、時計回りに進む。
- *  - 半径 = 登録カラーの彩度(S)。彩度が高いほど外周(鮮やかな色の帯)に、
- *    低いほど中心の暗がりに近づく。
+ *  - 半径 = 登録カラーの彩度(S)と明度(L)を平均した「鮮やかさ」。
+ *    彩度・明度がどちらも高いほど外周(鮮やかな色の帯)に、どちらか低いと
+ *    中心寄りになる。彩度だけだと、彩度100%で明度だけ違う色(深緑・淡いミント等)
+ *    が同じ場所に固まってしまうため、明度も混ぜて位置を分けている。
  *  - 色が近いキャラクター同士は重なってもよい(位置の正確さを優先する)。
  *
  * レイアウトは「表示中のキャラクター」ではなく「登録されている全キャラクター」を
@@ -68,11 +70,12 @@
     const baseMaxR = size / 2 * 0.93;
     const minR = size / 2 * 0.10;
     return characters.map((c) => {
-      const { h, s } = ColorUtils.hexToHsl(c.color);
+      const { h, s, l } = ColorUtils.hexToHsl(c.color);
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
       const maxR = baseMaxR * boundaryFraction(angleDeg);
-      const r = minR + (ColorUtils.clamp(s, 0, 100) / 100) * (maxR - minR);
+      const vividness = (ColorUtils.clamp(s, 0, 100) + ColorUtils.clamp(l, 0, 100)) / 200;
+      const r = minR + vividness * (maxR - minR);
       return {
         id: c.id,
         tx: cx + r * Math.cos(angleRad),
@@ -205,6 +208,8 @@
     Store.subscribe(() => scheduleRebuildIfNeeded());
     document.addEventListener('themechange', () => {
       ringEl.style.background = buildConicGradient();
+      // テーマによって輪の形(円/スクエア)が変わるため、配置も引き直す
+      rebuild();
     });
 
     const onResize = Utils.debounce(() => rebuild(), 180);
