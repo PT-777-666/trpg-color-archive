@@ -610,19 +610,24 @@ a { color: var(--accent-text); }
 
 .lv-expand-toggle {
   border: none;
-  background: transparent;
-  color: var(--text-faint);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
   font-size: 11px;
-  width: 20px; height: 20px;
+  padding: 6px 10px;
+  border-radius: 999px;
   flex-shrink: 0;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-  display: flex;
+  box-shadow: var(--clay-raised);
+  transition: box-shadow 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
 }
-.lv-expand-toggle:hover { color: var(--text-primary); }
-.lv-expand-toggle-open { transform: rotate(180deg); color: var(--accent-text); }
+.lv-expand-toggle:hover { box-shadow: var(--clay-raised-hover); color: var(--text-primary); transform: translateY(-1px); }
+.lv-expand-toggle-arrow { display: inline-block; transition: transform 0.2s ease; }
+.lv-expand-toggle-open { color: var(--accent-text); box-shadow: var(--clay-pressed); transform: translateY(0); }
+.lv-expand-toggle-open:hover { box-shadow: var(--clay-pressed); transform: translateY(0); }
+.lv-expand-toggle-open .lv-expand-toggle-arrow { transform: rotate(180deg); }
 
 .lv-detail {
   flex-basis: 100%;

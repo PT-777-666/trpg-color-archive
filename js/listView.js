@@ -76,7 +76,7 @@
     const expanded = expandedIds.has(c.id);
     return `
       <div class="lv-row" data-id="${c.id}">
-        <button type="button" class="lv-expand-toggle${expanded ? ' lv-expand-toggle-open' : ''}" data-id="${c.id}" aria-label="詳細を開閉" aria-expanded="${expanded}">▾</button>
+        <button type="button" class="lv-expand-toggle${expanded ? ' lv-expand-toggle-open' : ''}" data-id="${c.id}" aria-label="詳細を開閉" aria-expanded="${expanded}"><span class="lv-expand-toggle-label">詳細</span><span class="lv-expand-toggle-arrow" aria-hidden="true">▾</span></button>
         <label class="lv-avatar-wrap" title="クリックして画像を変更">
           <img class="lv-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
           <span class="lv-avatar-edit-badge" aria-hidden="true">✎</span>
