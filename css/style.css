@@ -30,7 +30,7 @@
   --radius-md: 14px;
   --radius-sm: 9px;
   /* 色相環の輪・キャラアイコンで共有する六角形の切り抜き形状 */
-  --hex-clip: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 25%, 6.7% 75%);
+  --hex-clip: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
   --font-serif: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
   --font-sans: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
 }
