@@ -64,7 +64,16 @@
       document.getElementById('list-view').hidden = !active;
       wheelViewBtn.classList.toggle('mode-btn-active', !active);
       listViewBtn.classList.toggle('mode-btn-active', active);
-      if (active) ListView.show(); else { ListView.hide(); updateEmptyState(); }
+      if (active) {
+        ListView.show();
+      } else {
+        ListView.hide();
+        updateEmptyState();
+        // 一覧表示中はwheel-stageがhidden(clientWidth=0)なので、その間に
+        // タグ以外の編集(色など)があると600pxのフォールバック寸法で
+        // レイアウトされてしまう。表示に戻すたびに正しい寸法で引き直す。
+        Wheel.rebuild();
+      }
     }
     wheelViewBtn.addEventListener('click', () => setListActive(false));
     listViewBtn.addEventListener('click', () => setListActive(true));
