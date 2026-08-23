@@ -197,19 +197,10 @@ a { color: var(--accent-text); }
 }
 
 .app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 14px;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--glass-border);
 }
 
-.app-title-block {
-  flex: 1 1 320px;
-  min-width: 260px;
-}
 
 .app-title {
   font-family: var(--font-serif);
@@ -253,6 +244,7 @@ a { color: var(--accent-text); }
   gap: 10px;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 16px;
 }
 
 .app-footer {
@@ -1636,9 +1628,6 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 }
 
 @media (max-width: 640px) {
-  .app-header { flex-direction: column; align-items: flex-start; }
-  .app-title-block { flex: none; min-width: 0; width: 100%; }
-  .app-header-actions { width: 100%; }
   .app-header-actions .btn { flex: 1; }
   .tag-bar-row { flex-direction: column; align-items: stretch; }
   .tag-mode-toggle { align-self: flex-end; }
