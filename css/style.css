@@ -1252,16 +1252,41 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
   border: 2.5px solid #0a0a0a;
   border-radius: 8px;
 }
-/* AND/OR・色相環⇄一覧・色順名前順・テーマ切り替えのセグメントコントロールは
-   タグのピルとは別物なので、丸のまま残さず.btnと同じ角丸に揃える */
-:root[data-theme="vivid"] .mode-btn,
-:root[data-theme="vivid"] .theme-btn {
-  border-radius: 8px;
-}
+/* AND/OR・色相環⇄一覧・色順名前順・テーマ切り替えのセグメントコントロールは、
+   ビビッドだけピルのくぼみ表現をやめてタブ/アンダーライン式にする */
 :root[data-theme="vivid"] .tag-mode-toggle,
 :root[data-theme="vivid"] .theme-switcher {
-  border-radius: 10px;
-  border: 2px solid #0a0a0a;
+  background: none;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  border-bottom: 2px solid #0a0a0a;
+  padding: 0 0 8px;
+  gap: 18px;
+}
+:root[data-theme="vivid"] .mode-btn,
+:root[data-theme="vivid"] .theme-btn {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 2px 0;
+  position: relative;
+}
+:root[data-theme="vivid"] .mode-btn-active,
+:root[data-theme="vivid"] .theme-btn-active {
+  background: none;
+  box-shadow: none;
+  font-weight: 700;
+}
+:root[data-theme="vivid"] .mode-btn-active::after,
+:root[data-theme="vivid"] .theme-btn-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 2px;
+  background: #0a0a0a;
 }
 :root[data-theme="vivid"] .tag-pill,
 :root[data-theme="vivid"] .tag-chip {
