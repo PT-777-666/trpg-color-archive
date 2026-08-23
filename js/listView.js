@@ -85,7 +85,10 @@
         <div class="lv-info">
           <div class="lv-name">${Utils.escapeHtml(c.name || '無名のキャラクター')}</div>
           <div class="lv-sub">${Utils.escapeHtml(sub)}</div>
-          <input type="text" class="lv-color-input" value="${hex}" maxlength="7" data-id="${c.id}" title="カラーコード" />
+          <div class="lv-color-row">
+            <input type="text" class="lv-color-input" value="${c.color ? hex : ''}" placeholder="未設定" maxlength="7" data-id="${c.id}" title="カラーコード" />
+            ${c.color ? `<button type="button" class="lv-color-clear" data-id="${c.id}" title="カラーコードを消す" aria-label="カラーコードを消す">×</button>` : ''}
+          </div>
         </div>
         <div class="lv-tags-col">
           ${tags.map((t) => tagChipHtml(t, c.id)).join('')}
@@ -169,13 +172,22 @@
       const commit = async () => {
         const character = Store.get().characters.find((c) => c.id === input.dataset.id);
         if (!character) return;
-        const hex = ColorUtils.normalizeHex(input.value);
-        if (hex === ColorUtils.normalizeHex(character.color || '')) return;
+        // 空欄でblurした場合はグレーに正規化せず、未設定のまま消す
+        const hex = input.value.trim() === '' ? '' : ColorUtils.normalizeHex(input.value);
+        if (hex === (character.color || '')) return;
         await persistUpdate(character, { color: hex });
       };
       input.addEventListener('blur', commit);
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      });
+    });
+
+    containerEl.querySelectorAll('.lv-color-clear').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const character = Store.get().characters.find((c) => c.id === btn.dataset.id);
+        if (!character) return;
+        await persistUpdate(character, { color: '' });
       });
     });
 
