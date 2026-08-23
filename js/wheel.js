@@ -127,7 +127,9 @@
 
   function rebuild() {
     const state = Store.get();
-    const characters = state.characters;
+    // カラーコード未設定の子は色相環上の位置に意味がないため表示しない
+    // (一覧側の「カラー未設定」セクションで見つけて登録してもらう)。
+    const characters = state.characters.filter((c) => c.color);
     const size = stageEl.clientWidth || stageEl.clientHeight || 600;
 
     // 使われなくなった要素を削除
@@ -245,7 +247,8 @@
     const state = Store.get();
     const visibleIds = new Set(Store.filteredCharacters().map((c) => c.id));
     const hasFilter = state.selectedTags.length > 0;
-    const characters = state.characters.filter((c) => !hasFilter || visibleIds.has(c.id));
+    // カラーコード未設定の子は色相環上に表示していないので、書き出しにも含めない
+    const characters = state.characters.filter((c) => c.color && (!hasFilter || visibleIds.has(c.id)));
     if (characters.length === 0) {
       alert('保存できるキャラクターがいません。');
       return null;

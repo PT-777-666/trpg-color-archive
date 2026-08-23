@@ -93,8 +93,20 @@
 
   function updateEmptyState() {
     const el = document.getElementById('empty-state');
-    const count = Store.get().characters.length;
-    el.classList.toggle('is-visible', count === 0 && !Store.get().loading);
+    const characters = Store.get().characters;
+    const coloredCount = characters.filter((c) => c.color).length;
+    const noneRegistered = characters.length === 0;
+    const noneColored = !noneRegistered && coloredCount === 0;
+    el.classList.toggle('is-visible', (noneRegistered || noneColored) && !Store.get().loading);
+    if (noneColored) {
+      el.querySelector('p').textContent = '登録済みのキャラクターに、カラーコードが設定されている子がいません。';
+      el.querySelector('button').textContent = '一覧でカラーコードを設定する';
+      el.querySelector('button').onclick = () => document.getElementById('btn-view-list').click();
+    } else {
+      el.querySelector('p').textContent = 'まだキャラクターが登録されていません。';
+      el.querySelector('button').textContent = '最初のキャラクターを追加する';
+      el.querySelector('button').onclick = () => CharacterForm.open(null);
+    }
   }
 
   function updateStatsBar() {
