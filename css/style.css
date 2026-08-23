@@ -1344,6 +1344,32 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 :root[data-theme="vivid"] .btn-primary::before {
   content: none;
 }
+/* パステルと同じ考え方で、ビビッドも主役(Filled)と脇役(Outline)の強弱をつける。
+   脇役はハードシャドウをやめて枠線だけの見た目にし、破壊的操作(Destructive)は
+   黒枠の代わりに危険色の枠にして見分けやすくする */
+:root[data-theme="vivid"] .btn-ghost {
+  box-shadow: none;
+}
+:root[data-theme="vivid"] .btn-ghost:hover {
+  box-shadow: none;
+  background: rgba(10, 10, 10, 0.06);
+  transform: none;
+}
+:root[data-theme="vivid"] .btn-ghost:active {
+  transform: none;
+}
+:root[data-theme="vivid"] .btn-danger {
+  border-color: var(--danger);
+  box-shadow: none;
+}
+:root[data-theme="vivid"] .btn-danger:hover {
+  box-shadow: none;
+  background: #ffd3d3;
+  transform: none;
+}
+:root[data-theme="vivid"] .btn-danger:active {
+  transform: none;
+}
 /* AND/OR・色相環⇄一覧・色順名前順・テーマ切り替えのセグメントコントロールは、
    ビビッドは他のボタン(新規キャラクター等)と同じ「太枠+ベタッとしたハードシャドウ」に揃える。
    選択中はライムで塗りつぶし、影を消して押し込まれたように見せる */
