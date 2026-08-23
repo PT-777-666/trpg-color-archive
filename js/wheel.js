@@ -119,7 +119,10 @@
   }
 
   function layoutKeyOf(characters) {
-    return characters.map((c) => `${c.id}:${c.color}`).join('|');
+    // id/colorだけでなくname・imageも入れておく。どちらもオーブの見た目
+    // (プレースホルダーの頭文字や画像そのもの)に関わるため、これらだけが
+    // 変わった編集でも再描画(paintOrb)が確実に走るようにする。
+    return characters.map((c) => `${c.id}:${c.color}:${c.name}:${c.image || ''}`).join('|');
   }
 
   function rebuild() {
