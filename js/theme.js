@@ -23,7 +23,7 @@
       textPrimary: '#3d362c',
       accentText: '#906130',
       textFaint: '#8f8371',
-      shape: 'hexagon'
+      shape: 'circle'
     },
     shiden: {
       label: '紫電',

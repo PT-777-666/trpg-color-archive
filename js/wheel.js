@@ -44,15 +44,9 @@
     return ColorUtils.clamp(size * 0.034, 15, 27);
   }
 
-  // 色相環の輪の形は、頂点/角の方向のほうが辺の中点方向より外側まで伸びる。
+  // 正方形の輪では、角(45°ずれ)の方向が辺の中点方向より外側まで伸びる。
   // その比率(0〜1に正規化、1.0が最も外側)を角度から返し、配置計算で
-  // 「輪のすぐ内側」を形に関わらず正しく再現するために使う。
-
-  function hexBoundaryFraction(angleDeg) {
-    const apothemRatio = Math.cos(Math.PI / 6); // 0.866...
-    let t = ((angleDeg + 90) % 60 + 60) % 60 - 30;
-    return apothemRatio / Math.cos((t * Math.PI) / 180);
-  }
+  // 「輪のすぐ内側」を形に関わらず正しく再現するために使う。円は角度に依らず一定。
 
   // 軸に揃った(回転していない)正方形。辺の中点方向が最も近く、角(45°ずれ)が最も遠い。
   function squareBoundaryFraction(angleDeg) {
@@ -63,11 +57,11 @@
 
   function currentShape() {
     const colors = global.ThemeManager ? global.ThemeManager.getThemeColors() : null;
-    return (colors && colors.shape) || 'hexagon';
+    return (colors && colors.shape) || 'circle';
   }
 
   function boundaryFraction(angleDeg) {
-    return currentShape() === 'square' ? squareBoundaryFraction(angleDeg) : hexBoundaryFraction(angleDeg);
+    return currentShape() === 'square' ? squareBoundaryFraction(angleDeg) : 1;
   }
 
   function computeTargets(characters, size) {
@@ -273,15 +267,9 @@
   // 今のビューポート幅ではなく、常に一定の高解像度サイズで組み直すことで、
   // スマホで開いていても綺麗な画像になるようにしている。
 
-  // ライブ表示の --hex-clip と同じ向き(頂点が真上)の六角形パスを作る。
-  function hexagonPath(ctx, cx, cy, r) {
+  function circlePath(ctx, cx, cy, r) {
     ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-      const angle = ((-90 + i * 60) * Math.PI) / 180;
-      const x = cx + r * Math.cos(angle);
-      const y = cy + r * Math.sin(angle);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.closePath();
   }
 
@@ -293,7 +281,7 @@
 
   function shapePath(ctx, cx, cy, r, cornerR) {
     if (currentShape() === 'square') roundedSquarePath(ctx, cx, cy, r, cornerR);
-    else hexagonPath(ctx, cx, cy, r);
+    else circlePath(ctx, cx, cy, r);
   }
 
   function loadImageSafe(src) {
