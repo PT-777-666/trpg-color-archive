@@ -223,16 +223,29 @@
       const id = el.dataset.id;
       const character = Store.get().characters.find((c) => c.id === id);
       if (!character) return;
+      const row = containerEl.querySelector(`.lv-row[data-id="${id}"]`);
+      const avatar = row ? row.querySelector('.lv-avatar') : null;
       ColorWheel.create(el, {
         initialHex: character.color || '#c9a876',
         onChange: (hex) => {
+          // ドラッグ中はDB/Storeに触らず、画面上の表示だけをその場で更新する
+          // (Storeを更新すると一覧が再描画され、操作中のホイールごと消えてしまうため)
           const input = containerEl.querySelector(`.lv-color-input[data-id="${id}"]`);
           if (input) input.value = hex;
+          if (avatar) avatar.style.setProperty('--orb-color', hex);
+          if (row) {
+            row.style.setProperty('--row-color', hex);
+            row.classList.add('lv-row-colored');
+          }
         },
         onCommit: async (hex) => {
           const ch = Store.get().characters.find((c) => c.id === id);
           if (!ch) return;
           await persistUpdate(ch, { color: hex });
+          // 色順表示だと色を変えるたびに並び順が変わって行が飛んでしまうので、
+          // 確定後は編集していた行を画面中央にスクロールして見失わないようにする
+          const newRow = containerEl.querySelector(`.lv-row[data-id="${id}"]`);
+          if (newRow) newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       });
     });
