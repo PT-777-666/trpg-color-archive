@@ -285,9 +285,12 @@ a { color: var(--accent-text); }
 .stats-bar { color: var(--secondary-on-void); }
 
 .app-disclaimer {
-  margin: 10px 0 0;
+  max-width: 640px;
+  margin: 14px auto 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--glass-border);
   font-size: 11px;
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--secondary-on-void);
   opacity: 0.75;
   text-align: center;
@@ -1024,16 +1027,11 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 
 /* ---------- 使い方プルダウン ---------- */
 
-.ug-wrap { position: relative; margin-top: 10px; }
+.ug-wrap { margin-top: 10px; }
 
 .ug-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 30;
-  width: min(420px, 88vw);
-  max-height: 70vh;
-  overflow-y: auto;
+  margin-top: 10px;
+  width: min(420px, 100%);
   background: var(--bg-panel);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
