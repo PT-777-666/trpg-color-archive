@@ -1466,6 +1466,10 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
    揃えたまま維持する(破壊的操作だけ枠色で見分ける) */
 :root[data-theme="vivid"] .btn-ghost:hover {
   background: rgba(10, 10, 10, 0.06);
+  /* パステル向けのbtn-ghost:hoverが薄い半透明の枠色を指定しており、
+     ビビッドの太い黒枠がホバー時だけ透けて角が欠けたように見えてしまう
+     ため、枠色を明示的に不透明な黒へ固定する */
+  border-color: #0a0a0a;
 }
 :root[data-theme="vivid"] .btn-danger {
   border-color: var(--danger);
