@@ -252,7 +252,8 @@
     });
   }
 
-  async function exportImage() {
+  async function exportImage(options) {
+    const transparent = !!(options && options.transparent);
     const EXPORT_SIZE = 1000; // 色相環そのものの直径(px)
     const PAD_TOP = 120, PAD_SIDE = 60, PAD_BOTTOM = 60;
     const scale = 2; // 高解像度書き出し用
@@ -301,9 +302,11 @@
     const cy = PAD_TOP + EXPORT_SIZE / 2;
     const radius = EXPORT_SIZE / 2;
 
-    // 背景(テーマの下地色)
-    ctx.fillStyle = bgVoid;
-    ctx.fillRect(0, 0, canvasW, canvasH);
+    // 背景(テーマの下地色)。透過指定時はここを塗らず、キャンバスの初期状態(透明)のままにする
+    if (!transparent) {
+      ctx.fillStyle = bgVoid;
+      ctx.fillRect(0, 0, canvasW, canvasH);
+    }
 
     // タイトル
     ctx.fillStyle = theme.textPrimary;
@@ -404,7 +407,8 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `character-hue-wheel_${new Date().toISOString().slice(0, 10)}.png`;
+        const suffix = transparent ? '_transparent' : '';
+        a.download = `character-hue-wheel_${new Date().toISOString().slice(0, 10)}${suffix}.png`;
         document.body.appendChild(a);
         a.click();
         a.remove();

@@ -49,11 +49,15 @@
     <div class="app-title-block">
       <h1 class="app-title">キャラクター色相環ソート</h1>
       <p class="app-usage-label">使い方</p>
-      <p class="app-usage-hint">ホバーで簡易情報、クリックで詳細、タグで絞り込みできます。</p>
+      <p class="app-usage-hint">カーソルを乗せると簡単な情報、クリックで詳しく見られます。タグでの絞り込みもできますよ。</p>
     </div>
     <div class="app-header-actions">
       <button type="button" id="btn-add-character" class="btn btn-primary">＋ 新規キャラクター</button>
       <button type="button" id="btn-save-image" class="btn btn-ghost" title="今表示されている色相環を画像として保存します"><svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg><span id="btn-save-image-label">色相環を画像で保存</span></button>
+      <label class="save-transparent-toggle" title="チェックすると、背景が透明なPNGとして保存します">
+        <input type="checkbox" id="btn-save-image-transparent" />
+        背景を透明にする
+      </label>
       <button type="button" id="btn-export" class="btn btn-ghost" title="今のキャラクターを全部JSONファイルに保存します">バックアップを保存(JSON)</button>
       <button type="button" id="btn-import" class="btn btn-ghost" title="保存したJSONファイルから復元します">バックアップから復元(JSON)</button>
       <input type="file" id="import-file-input" accept="application/json" hidden />
@@ -81,7 +85,7 @@
 
   <footer class="app-footer">
     <span id="stats-bar" class="stats-bar"></span>
-    <span class="footer-note">データはこのブラウザ内(IndexedDB)にのみ保存されます。定期的に「バックアップを保存」しておいてください。</span>
+    <span class="footer-note">⚠ キャラクターのデータは、このブラウザだけに保存されています。別のパソコンやブラウザ、シークレットモードでは見られません。ブラウザの履歴やデータを消すと一緒に消えてしまうので、こまめに「バックアップを保存」しておくと安心です。</span>
     <div id="theme-switcher" class="theme-switcher" role="group" aria-label="デザインテーマ"></div>
   </footer>
 </div>

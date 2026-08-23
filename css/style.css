@@ -244,6 +244,22 @@ a { color: var(--accent-text); }
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.save-transparent-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--body-on-void);
+  cursor: pointer;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.save-transparent-toggle input[type="checkbox"] {
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 
 .app-footer {

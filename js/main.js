@@ -29,7 +29,8 @@
       btn.disabled = true;
       label.textContent = '画像を作成中…';
       try {
-        await Wheel.exportImage();
+        const transparent = document.getElementById('btn-save-image-transparent').checked;
+        await Wheel.exportImage({ transparent });
       } finally {
         btn.disabled = false;
         label.textContent = original;
