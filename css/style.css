@@ -203,6 +203,7 @@ a { color: var(--accent-text); }
   margin: 0;
   letter-spacing: 0.03em;
   color: var(--title-on-void);
+  white-space: nowrap;
 }
 
 .app-usage-label {
