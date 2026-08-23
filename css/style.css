@@ -1023,12 +1023,18 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
   padding: 18px 20px;
 }
 
-.ug-lede { color: var(--text-faint); font-size: 12.5px; margin: 0 0 16px; max-width: 640px; }
-
 .ug-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
 .ug-step { border-bottom: 1px dashed var(--glass-border); padding-bottom: 12px; }
 .ug-step:last-child { border-bottom: none; padding-bottom: 0; }
-.ug-step-title { font-size: 13px; margin: 0 0 4px; color: var(--accent-text); }
+.ug-step-title {
+  font-size: 13px;
+  margin: 0 0 4px;
+  color: var(--accent-text);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.ug-step-title::before { content: '•'; }
 .ug-step-body { font-size: 12.5px; line-height: 1.8; color: var(--text-secondary); margin: 0; max-width: 640px; }
 
 /* ---------- キャラクターフォーム ---------- */
