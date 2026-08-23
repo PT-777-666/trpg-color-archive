@@ -697,25 +697,10 @@ a { color: var(--accent-text); }
 .lv-palette {
   flex-basis: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
   margin-top: 4px;
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px dashed var(--glass-border);
 }
-.lv-palette-swatch {
-  appearance: none;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  border: 2px solid var(--bg-panel);
-  box-shadow: 0 0 0 1px var(--glass-border);
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-}
-.lv-palette-swatch:hover { transform: scale(1.15); }
-.lv-palette-swatch:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
 
 .lv-expand-toggle {
   border: 1px solid var(--glass-border);
@@ -1283,25 +1268,51 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 }
 .cf-color-row input[type="text"] { font-family: monospace; border-radius: 20px; }
 
-.cf-palette {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 10px;
+#cf-color-wheel { margin-top: 10px; }
+
+/* ---------- カラーホイール(キャラクターフォーム・一覧共通) ---------- */
+
+.color-wheel {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
-.cf-palette-swatch {
-  appearance: none;
-  width: 24px; height: 24px;
+.color-wheel-canvas-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  border: 2px solid var(--bg-panel);
-  box-shadow: 0 0 0 1px var(--glass-border);
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--clay-pressed);
 }
-.cf-palette-swatch:hover { transform: scale(1.15); }
-.cf-palette-swatch:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+.color-wheel-canvas {
+  display: block;
+  border-radius: 50%;
+  cursor: crosshair;
+  touch-action: none;
+}
+.color-wheel-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.color-wheel-l-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 160px;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.color-wheel-l-slider { flex: 1; accent-color: var(--accent); }
 
 .cf-hint { font-size: 11px; color: var(--text-faint); line-height: 1.6; margin-top: 6px; }
 
@@ -1544,21 +1555,14 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
   border-radius: 8px;
   border: 2px solid #0a0a0a;
 }
-:root[data-theme="vivid"] .cf-palette-swatch {
-  border-radius: 6px;
-  border: 2px solid #0a0a0a;
+:root[data-theme="vivid"] .color-wheel-canvas-wrap {
   box-shadow: none;
+  border: 2.5px solid #0a0a0a;
+  border-radius: 50%;
 }
-:root[data-theme="vivid"] .cf-palette-swatch:hover {
-  box-shadow: 2px 2px 0 #0a0a0a;
-}
-:root[data-theme="vivid"] .lv-palette-swatch {
-  border-radius: 5px;
-  border: 2px solid #0a0a0a;
-  box-shadow: none;
-}
-:root[data-theme="vivid"] .lv-palette-swatch:hover {
-  box-shadow: 2px 2px 0 #0a0a0a;
+:root[data-theme="vivid"] .color-wheel-cursor {
+  border-color: #0a0a0a;
+  box-shadow: 0 0 0 1.5px #fff;
 }
 /* 入力欄フォーカス時の黄緑は細い線として散らばると目にうるさいので、
    ボタンやタグの塗りだけに絞り、フォーカス表示は紫に寄せる */

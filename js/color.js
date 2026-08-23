@@ -92,11 +92,6 @@
     return luminance > 0.6;
   }
 
-  // カラーコード欄の隣に置くパレット用のプリセット。色相を30度刻みで12色、
-  // 彩度・明度を揃えて選んでいるので、色相環に並べたときの主張の強さも均一になる。
-  // あくまで入力の手間を減らすための候補で、テキスト欄への自由入力は別途できる。
-  const PALETTE = Array.from({ length: 12 }, (_, i) => hslToHex(i * 30, 78, 55));
-
   global.ColorUtils = {
     clamp,
     normalizeHex,
@@ -106,7 +101,6 @@
     hslToRgb,
     hslToHex,
     rgbStringToHex,
-    isLight,
-    PALETTE
+    isLight
   };
 })(window);

@@ -27,6 +27,7 @@
   let editingId = null;
   let draftTags = [];
   let draftImage = '';
+  let colorWheel = null;
 
   function tagChipHtml(tag) {
     return `<span class="tag-chip" data-tag="${Utils.escapeHtml(tag)}">${Utils.escapeHtml(tag)}<button type="button" class="tag-chip-remove" aria-label="削除">×</button></span>`;
@@ -111,6 +112,7 @@
     renderTagChips();
     renderImagePreview();
     updateColorPreview();
+    colorWheel.setHex(formEl.querySelector('#cf-color-hex').value);
   }
 
   function open(id) {
@@ -207,10 +209,8 @@
             <span id="cf-color-preview" class="cf-color-preview" aria-hidden="true"></span>
             <input type="text" id="cf-color-hex" value="#c9a876" maxlength="7" />
           </div>
-          <div class="cf-palette" role="group" aria-label="カラーパレットから選ぶ">
-            ${ColorUtils.PALETTE.map((hex) => `<button type="button" class="cf-palette-swatch" data-hex="${hex}" style="background:${hex}" title="${hex}" aria-label="${hex}を選択"></button>`).join('')}
-          </div>
-          <p class="cf-hint">いあきゃらに登録している「カラー」の値をそのまま入力してください。パレットから選ぶこともできます。</p>
+          <div id="cf-color-wheel"></div>
+          <p class="cf-hint">いあきゃらに登録している「カラー」の値をそのまま入力するか、カラーホイールから選べます。</p>
         </div>
         <div class="cf-col-fields">
           <label class="cf-label">名前 <span class="cf-required">*</span></label>
@@ -306,17 +306,21 @@
     });
 
     const colorHex = formEl.querySelector('#cf-color-hex');
+    colorWheel = ColorWheel.create(formEl.querySelector('#cf-color-wheel'), {
+      onChange: (hex) => {
+        colorHex.value = hex;
+        updateColorPreview();
+      },
+      onCommit: (hex) => {
+        colorHex.value = hex;
+        updateColorPreview();
+      }
+    });
     colorHex.addEventListener('input', updateColorPreview);
     colorHex.addEventListener('change', () => {
       colorHex.value = ColorUtils.normalizeHex(colorHex.value);
       updateColorPreview();
-    });
-
-    formEl.querySelectorAll('.cf-palette-swatch').forEach((swatch) => {
-      swatch.addEventListener('click', () => {
-        colorHex.value = swatch.dataset.hex;
-        updateColorPreview();
-      });
+      colorWheel.setHex(colorHex.value);
     });
 
     formEl.querySelector('#cf-tag-add').addEventListener('click', addTagFromInput);
@@ -371,6 +375,7 @@
       if (imported.color) {
         formEl.querySelector('#cf-color-hex').value = imported.color;
         updateColorPreview();
+        colorWheel.setHex(imported.color);
       }
       if (imported.occupation) formEl.querySelector('#cf-occupation').value = imported.occupation;
       if (imported.age) formEl.querySelector('#cf-age').value = imported.age;

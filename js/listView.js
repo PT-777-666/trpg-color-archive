@@ -52,7 +52,7 @@
   function paletteHtml(c) {
     return `
       <div class="lv-palette">
-        ${ColorUtils.PALETTE.map((hex) => `<button type="button" class="lv-palette-swatch" data-id="${c.id}" data-hex="${hex}" style="background:${hex}" title="${hex}" aria-label="${hex}を選択"></button>`).join('')}
+        <div class="lv-color-wheel" data-id="${c.id}"></div>
       </div>
     `;
   }
@@ -219,11 +219,21 @@
       });
     });
 
-    containerEl.querySelectorAll('.lv-palette-swatch').forEach((swatch) => {
-      swatch.addEventListener('click', async () => {
-        const character = Store.get().characters.find((c) => c.id === swatch.dataset.id);
-        if (!character) return;
-        await persistUpdate(character, { color: swatch.dataset.hex });
+    containerEl.querySelectorAll('.lv-color-wheel').forEach((el) => {
+      const id = el.dataset.id;
+      const character = Store.get().characters.find((c) => c.id === id);
+      if (!character) return;
+      ColorWheel.create(el, {
+        initialHex: character.color || '#c9a876',
+        onChange: (hex) => {
+          const input = containerEl.querySelector(`.lv-color-input[data-id="${id}"]`);
+          if (input) input.value = hex;
+        },
+        onCommit: async (hex) => {
+          const ch = Store.get().characters.find((c) => c.id === id);
+          if (!ch) return;
+          await persistUpdate(ch, { color: hex });
+        }
       });
     });
 
