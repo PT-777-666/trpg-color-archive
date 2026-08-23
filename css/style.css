@@ -269,16 +269,15 @@ a { color: var(--accent-text); }
 
 .btn {
   appearance: none;
-  border: none;
-  background: var(--bg-panel);
+  border: 1px solid transparent;
+  background: transparent;
   color: var(--text-primary);
   padding: 9px 16px;
   border-radius: 999px;
   font-size: 13px;
   letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: var(--clay-raised);
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  transition: box-shadow 0.2s ease, transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -286,22 +285,41 @@ a { color: var(--accent-text); }
   gap: 6px;
 }
 .btn-icon-svg { flex-shrink: 0; }
-.btn:hover { box-shadow: var(--clay-raised-hover); transform: translateY(-1px); }
-.btn:active { box-shadow: var(--clay-pressed); transform: translateY(1px); }
 
+/* 主役ボタンだけクレイ影+光沢ハイライトで目立たせ、脇役ボタンは枠線だけの
+   控えめな見た目にする(全ボタンが同じ強さで主張して単調に見えるのを避ける) */
 .btn-primary {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(135deg, var(--accent), var(--accent-gradient-end));
   color: var(--btn-primary-text);
   font-weight: 600;
+  box-shadow: var(--clay-raised);
 }
-.btn-primary:hover { filter: brightness(1.06); }
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 40%);
+  pointer-events: none;
+}
+.btn-primary:hover { filter: brightness(1.06); box-shadow: var(--clay-raised-hover); transform: translateY(-1px); }
+.btn-primary:active { box-shadow: var(--clay-pressed); transform: translateY(1px); }
 
-.btn-ghost { background: var(--bg-panel); }
+.btn-ghost {
+  background: var(--bg-panel);
+  border-color: var(--glass-border);
+}
+.btn-ghost:hover { background: var(--glass-fill-strong); border-color: rgba(var(--neutral-tint), 0.3); transform: translateY(-1px); }
+.btn-ghost:active { transform: translateY(0); background: var(--glass-fill); }
 
 .btn-danger {
   color: var(--danger);
   background: var(--danger-soft);
+  border-color: rgba(200, 90, 70, 0.3);
 }
+.btn-danger:hover { border-color: var(--danger); transform: translateY(-1px); }
+.btn-danger:active { transform: translateY(0); }
 
 .btn-small { padding: 6px 12px; font-size: 12px; }
 .btn:disabled { opacity: 0.55; cursor: wait; }
@@ -1304,6 +1322,22 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 :root[data-theme="vivid"] .btn {
   border: 2.5px solid #0a0a0a;
   border-radius: 8px;
+  /* パステル側だけ主役ボタン(.btn-primary)にのみ影を残したが、ビビッドは
+     元々全ボタン共通のハードシャドウ表現なので.btn全体に戻す */
+  box-shadow: var(--clay-raised);
+}
+:root[data-theme="vivid"] .btn:hover {
+  box-shadow: var(--clay-raised-hover);
+  transform: translateY(-1px);
+}
+:root[data-theme="vivid"] .btn:active {
+  box-shadow: var(--clay-pressed);
+  transform: translateY(1px);
+}
+/* 光沢ハイライトはパステルの艶っぽい方向性向けの演出なので、
+   フラットな面を基調とするビビッドのネオブルータリズムには入れない */
+:root[data-theme="vivid"] .btn-primary::before {
+  content: none;
 }
 /* AND/OR・色相環⇄一覧・色順名前順・テーマ切り替えのセグメントコントロールは、
    ビビッドは他のボタン(新規キャラクター等)と同じ「太枠+ベタッとしたハードシャドウ」に揃える。
