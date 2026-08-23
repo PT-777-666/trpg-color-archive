@@ -16,6 +16,9 @@
   }
 
   function wireHeaderActions() {
+    document.getElementById('btn-usage-guide').addEventListener('click', () => {
+      UsageGuide.open();
+    });
     document.getElementById('btn-add-character').addEventListener('click', () => {
       CharacterForm.open(null);
     });
@@ -125,6 +128,7 @@
   async function init() {
     HoverCard.mount();
     DetailModal.mount();
+    UsageGuide.mount();
     CharacterForm.mount();
     BulkImport.mount();
     ListView.mount(document.getElementById('list-view'));

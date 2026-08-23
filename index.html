@@ -48,8 +48,7 @@
   <header class="app-header">
     <div class="app-title-block">
       <h1 class="app-title">キャラクター色相環ソート</h1>
-      <p class="app-usage-label">使い方</p>
-      <p class="app-usage-hint">カーソルを乗せると簡単な情報、クリックで詳しく見られます。タグでの絞り込みもできますよ。</p>
+      <button type="button" id="btn-usage-guide" class="app-usage-btn">💡 使い方を見る</button>
     </div>
     <div class="app-header-actions">
       <button type="button" id="btn-add-character" class="btn btn-primary">＋ 新規キャラクター</button>
@@ -88,6 +87,7 @@
     <span class="footer-note">⚠ キャラクターのデータは、このブラウザだけに保存されています。別のパソコンやブラウザ、シークレットモードでは見られません。ブラウザの履歴やデータを消すと一緒に消えてしまうので、こまめに「バックアップを保存」しておくと安心です。</span>
     <div id="theme-switcher" class="theme-switcher" role="group" aria-label="デザインテーマ"></div>
   </footer>
+  <p class="app-disclaimer">このツールは個人が趣味で製作したものです。動作の保証はいたしかねますので、あらかじめご了承ください。</p>
 </div>
 
 <script src="js/utils.js"></script>
@@ -100,6 +100,7 @@
 <script src="js/iacharaSync.js"></script>
 <script src="js/hoverCard.js"></script>
 <script src="js/detailModal.js"></script>
+<script src="js/usageGuide.js"></script>
 <script src="js/characterForm.js"></script>
 <script src="js/bulkImport.js"></script>
 <script src="js/listView.js"></script>
