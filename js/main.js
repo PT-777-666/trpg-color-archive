@@ -53,6 +53,19 @@
       await DB.clearCharacters();
       Store.set({ characters: [], selectedTags: [] });
     });
+
+    let listActive = false;
+    const toggleBtn = document.getElementById('btn-toggle-list');
+    const wheelStage = document.getElementById('wheel-stage');
+    const wheelMain = document.querySelector('.wheel-main');
+    toggleBtn.addEventListener('click', () => {
+      listActive = !listActive;
+      wheelMain.classList.toggle('list-active', listActive);
+      wheelStage.hidden = listActive;
+      document.getElementById('list-view').hidden = !listActive;
+      toggleBtn.textContent = listActive ? '🎨 色相環で見る' : '📋 一覧で見る';
+      if (listActive) ListView.show(); else { ListView.hide(); updateEmptyState(); }
+    });
   }
 
   function renderThemeSwitcher() {
@@ -90,6 +103,7 @@
     DetailModal.mount();
     CharacterForm.mount();
     BulkImport.mount();
+    ListView.mount(document.getElementById('list-view'));
     Wheel.mount(document.getElementById('wheel-stage'));
     TagFilter.mount(document.getElementById('tag-bar'));
     wireHeaderActions();

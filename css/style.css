@@ -509,6 +509,72 @@ a { color: var(--accent-text); }
   color: var(--secondary-on-void);
 }
 .empty-state.is-visible { display: flex; }
+/* 一覧表示中は色相環側の空状態が(#empty-state[hidden]より強い.is-visibleに
+   勝つよう)IDセレクタで確実に隠す */
+.wheel-main.list-active #empty-state { display: none; }
+
+/* ---------- 一覧表示(まとめてタグ付け用) ---------- */
+
+.list-view {
+  width: 100%;
+  max-width: 760px;
+  max-height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 2px;
+  align-self: stretch;
+}
+.list-view[hidden] { display: none; }
+
+.lv-empty { color: var(--secondary-on-void); font-size: 13px; text-align: center; padding: 40px 0; }
+
+.lv-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--bg-panel);
+  box-shadow: var(--clay-raised);
+  flex-wrap: wrap;
+}
+.lv-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--orb-color, var(--accent));
+  background: var(--orb-color, #f2ece0);
+  flex-shrink: 0;
+}
+.lv-info { min-width: 0; width: 150px; flex-shrink: 0; }
+.lv-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv-sub { font-size: 11px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.lv-tags-col {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.lv-tag-input {
+  flex: 1;
+  min-width: 110px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: rgba(var(--neutral-tint), 0.035);
+  color: var(--text-primary);
+}
+.lv-tag-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(var(--neutral-tint), 0.06);
+}
 
 /* ---------- ホバーカード ---------- */
 
@@ -1069,7 +1135,8 @@ a { color: var(--accent-text); }
 }
 
 :root[data-theme="vivid"] .hc-avatar,
-:root[data-theme="vivid"] .bi-avatar {
+:root[data-theme="vivid"] .bi-avatar,
+:root[data-theme="vivid"] .lv-avatar {
   border-radius: 8px;
   border-color: #0a0a0a;
 }
@@ -1089,7 +1156,8 @@ a { color: var(--accent-text); }
    ボタンやタグの塗りだけに絞り、フォーカス表示は紫に寄せる */
 :root[data-theme="vivid"] .cf-panel input:focus,
 :root[data-theme="vivid"] .cf-panel select:focus,
-:root[data-theme="vivid"] .cf-panel textarea:focus {
+:root[data-theme="vivid"] .cf-panel textarea:focus,
+:root[data-theme="vivid"] .lv-tag-input:focus {
   border-color: var(--accent-text);
 }
 
