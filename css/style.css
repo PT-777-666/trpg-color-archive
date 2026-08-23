@@ -284,17 +284,14 @@ a { color: var(--accent-text); }
 
 .stats-bar { color: var(--secondary-on-void); }
 
-.app-disclaimer {
-  max-width: 640px;
-  margin: 14px auto 0;
-  padding-top: 12px;
-  border-top: 1px dashed var(--glass-border);
-  font-size: 11px;
-  line-height: 1.8;
-  color: var(--secondary-on-void);
-  opacity: 0.75;
-  text-align: center;
+.footer-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 320px;
+  min-width: 200px;
 }
+.footer-note { line-height: 1.7; opacity: 0.85; }
 
 /* ---------- ボタン共通(粘土風の柔らかい立体感) ---------- */
 
@@ -1031,7 +1028,7 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 
 .ug-dropdown {
   margin-top: 10px;
-  width: min(420px, 100%);
+  width: 100%;
   background: var(--bg-panel);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
