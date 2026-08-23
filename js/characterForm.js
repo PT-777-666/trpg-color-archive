@@ -207,7 +207,10 @@
             <span id="cf-color-preview" class="cf-color-preview" aria-hidden="true"></span>
             <input type="text" id="cf-color-hex" value="#c9a876" maxlength="7" />
           </div>
-          <p class="cf-hint">いあきゃらに登録している「カラー」の値をそのまま入力してください。</p>
+          <div class="cf-palette" role="group" aria-label="カラーパレットから選ぶ">
+            ${ColorUtils.PALETTE.map((hex) => `<button type="button" class="cf-palette-swatch" data-hex="${hex}" style="background:${hex}" title="${hex}" aria-label="${hex}を選択"></button>`).join('')}
+          </div>
+          <p class="cf-hint">いあきゃらに登録している「カラー」の値をそのまま入力してください。パレットから選ぶこともできます。</p>
         </div>
         <div class="cf-col-fields">
           <label class="cf-label">名前 <span class="cf-required">*</span></label>
@@ -307,6 +310,13 @@
     colorHex.addEventListener('change', () => {
       colorHex.value = ColorUtils.normalizeHex(colorHex.value);
       updateColorPreview();
+    });
+
+    formEl.querySelectorAll('.cf-palette-swatch').forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        colorHex.value = swatch.dataset.hex;
+        updateColorPreview();
+      });
     });
 
     formEl.querySelector('#cf-tag-add').addEventListener('click', addTagFromInput);

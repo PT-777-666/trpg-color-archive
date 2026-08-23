@@ -13,6 +13,7 @@
   let lastFocused = null; // { charId, field: 'tag' | 'color' }
   let sortMode = 'hue'; // 'hue' | 'name'
   let expandedIds = new Set();
+  let paletteOpenIds = new Set();
 
   const ICON_DELETE = '<svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
 
@@ -44,6 +45,14 @@
           <label class="lv-detail-label">紹介文</label>
           <textarea class="lv-detail-input" data-id="${c.id}" data-field="description" rows="2">${Utils.escapeHtml(c.description || '')}</textarea>
         </div>
+      </div>
+    `;
+  }
+
+  function paletteHtml(c) {
+    return `
+      <div class="lv-palette">
+        ${ColorUtils.PALETTE.map((hex) => `<button type="button" class="lv-palette-swatch" data-id="${c.id}" data-hex="${hex}" style="background:${hex}" title="${hex}" aria-label="${hex}を選択"></button>`).join('')}
       </div>
     `;
   }
@@ -81,6 +90,7 @@
     const tags = c.tags || [];
     const sub = [c.occupation, c.system].filter(Boolean).join(' / ');
     const expanded = expandedIds.has(c.id);
+    const paletteOpen = paletteOpenIds.has(c.id);
     return `
       <div class="lv-row${c.color ? ' lv-row-colored' : ''}" data-id="${c.id}" style="--row-color:${hex}">
         <button type="button" class="lv-expand-toggle${expanded ? ' lv-expand-toggle-open' : ''}" data-id="${c.id}" aria-label="詳細を開閉" aria-expanded="${expanded}"><span class="lv-expand-toggle-label">詳細</span><span class="lv-expand-toggle-arrow" aria-hidden="true">▾</span></button>
@@ -95,6 +105,7 @@
           <div class="lv-color-row">
             <input type="text" class="lv-color-input" value="${c.color ? hex : ''}" placeholder="未設定" maxlength="7" data-id="${c.id}" title="カラーコード" />
             ${c.color ? `<button type="button" class="lv-color-clear" data-id="${c.id}" title="カラーコードを消す" aria-label="カラーコードを消す">×</button>` : ''}
+            <button type="button" class="lv-palette-toggle${paletteOpen ? ' lv-palette-toggle-open' : ''}" data-id="${c.id}" title="パレットから選ぶ" aria-label="パレットから選ぶ">🎨</button>
           </div>
         </div>
         <div class="lv-tags-col">
@@ -102,6 +113,7 @@
           <input type="text" class="lv-tag-input" list="lv-tag-suggestions" placeholder="タグを入力してEnter" data-id="${c.id}" />
         </div>
         <button type="button" class="lv-delete-btn" data-id="${c.id}" data-name="${Utils.escapeHtml(c.name || '無名のキャラクター')}" title="このキャラクターを削除" aria-label="削除">${ICON_DELETE}</button>
+        ${paletteOpen ? paletteHtml(c) : ''}
         ${expanded ? detailHtml(c) : ''}
       </div>
     `;
@@ -196,6 +208,22 @@
         const character = Store.get().characters.find((c) => c.id === btn.dataset.id);
         if (!character) return;
         await persistUpdate(character, { color: '' });
+      });
+    });
+
+    containerEl.querySelectorAll('.lv-palette-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (paletteOpenIds.has(id)) paletteOpenIds.delete(id); else paletteOpenIds.add(id);
+        render();
+      });
+    });
+
+    containerEl.querySelectorAll('.lv-palette-swatch').forEach((swatch) => {
+      swatch.addEventListener('click', async () => {
+        const character = Store.get().characters.find((c) => c.id === swatch.dataset.id);
+        if (!character) return;
+        await persistUpdate(character, { color: swatch.dataset.hex });
       });
     });
 
