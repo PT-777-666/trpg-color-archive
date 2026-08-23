@@ -2,10 +2,12 @@
  *
  * 配置方針:
  *  - 角度 = キャラクターの登録カラーの色相(H)。0度(赤)を12時方向に置き、時計回りに進む。
- *  - 半径 = 登録カラーの彩度(S)。彩度が高いほど外周(鮮やかな色の帯)に、
- *    低いほど中心の暗がりに近づく。明度(L)も±15%だけ弱く効かせていて、
- *    彩度100%で明度だけ違う色(深緑・淡いミント等)が完全に同じ場所へ
- *    固まるのを避けつつ、彩度の高い普通の色まで中心へ寄りすぎないようにしている。
+ *  - 半径 = 登録カラーの彩度(S)のみ。彩度が高いほど外周(鮮やかな色の帯)に、
+ *    低いほど中心の暗がりに近づく。
+ *  - オーブの大きさ = 登録カラーの明度(L)。明るい色ほど大きく、暗い色ほど
+ *    小さく表示する。位置(角度・半径)だけでは色相・彩度・明度の3軸を
+ *    同時に表せない(2次元の位置は独立した軸を2つまでしか運べない)ため、
+ *    明度だけは大きさという別の見た目で表現している。
  *  - 色が近いキャラクター同士は重なってもよい(位置の正確さを優先する)。
  *
  * レイアウトは「表示中のキャラクター」ではなく「登録されている全キャラクター」を
@@ -22,9 +24,6 @@
   let stageEl = null;
   let lastLayoutKey = '';
   let lastCharCount = -1;
-  let lastNodes = []; // 直近に計算した位置。画像書き出しで再利用する。
-  let lastStageSize = 600;
-  let lastOrbR = 20;
 
   const WHEEL_HUE_STOPS = []; // 角度の刻み。CSSとCanvas書き出しで共有する。
   for (let h = 0; h <= 360; h += 30) WHEEL_HUE_STOPS.push(h);
@@ -43,6 +42,11 @@
 
   function orbRadiusFor(size) {
     return ColorUtils.clamp(size * 0.034, 15, 27);
+  }
+
+  // 明度(L)をオーブの大きさの倍率に変換する。暗い色は小さく、明るい色は大きく。
+  function lightnessSizeFactor(l) {
+    return 0.7 + 0.6 * (ColorUtils.clamp(l, 0, 100) / 100); // 0.7倍(暗)〜1.3倍(明)
   }
 
   // 正方形の輪では、角(45°ずれ)の方向が辺の中点方向より外側まで伸びる。
@@ -73,20 +77,17 @@
       const { h, s, l } = ColorUtils.hexToHsl(c.color);
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
-      // 彩度を主、明度を従(±15%の変調のみ)にする。均等に混ぜると彩度の高い
-      // 普通の色まで軒並み中心寄りになってしまうため、彩度の重みを残す。
       const satFrac = ColorUtils.clamp(s, 0, 100) / 100;
-      const lightFactor = 0.85 + 0.15 * (ColorUtils.clamp(l, 0, 100) / 100);
-      const vividness = satFrac * lightFactor;
       // 半径は形に関わらず同じ基準(baseMaxR)で計算し、輪の形が円でない場合は
       // 「その角度での本当の輪の外周」を超えないよう上限だけかける。
       // (輪の形で最大半径そのものを縮めると、円のときより全体的に中心寄りに
       // 見えてしまうため、あくまで上限としてのみ効かせる)
-      const rUncapped = minR + vividness * (baseMaxR - minR);
+      const rUncapped = minR + satFrac * (baseMaxR - minR);
       const trueBoundaryR = baseMaxR * boundaryFraction(angleDeg);
       const r = Math.min(rUncapped, trueBoundaryR);
       return {
         id: c.id,
+        l,
         tx: cx + r * Math.cos(angleRad),
         ty: cy + r * Math.sin(angleRad),
         x: cx + r * Math.cos(angleRad),
@@ -163,13 +164,14 @@
 
     characters.forEach((c) => paintOrb(ensureOrbEl(c), c));
 
-    const orbR = orbRadiusFor(size);
+    const baseOrbR = orbRadiusFor(size);
     const nodes = computeTargets(characters, size);
-    const diameter = orbR * 2;
 
     nodes.forEach((n) => {
       const el = orbEls.get(n.id);
       if (!el) return;
+      const orbR = baseOrbR * lightnessSizeFactor(n.l);
+      const diameter = orbR * 2;
       el.style.width = diameter + 'px';
       el.style.height = diameter + 'px';
       el.style.transform = `translate(${n.x - orbR}px, ${n.y - orbR}px)`;
@@ -178,9 +180,6 @@
     updateFilterVisuals();
     lastLayoutKey = layoutKeyOf(characters);
     lastCharCount = characters.length;
-    lastNodes = nodes;
-    lastStageSize = size;
-    lastOrbR = orbR;
   }
 
   function updateFilterVisuals() {
@@ -276,7 +275,7 @@
       return null;
     }
 
-    const orbR = orbRadiusFor(EXPORT_SIZE);
+    const baseOrbR = orbRadiusFor(EXPORT_SIZE);
     const nodes = computeTargets(characters, EXPORT_SIZE);
     const nodeById = new Map(nodes.map((n) => [n.id, n]));
 
@@ -367,6 +366,7 @@
       const hex = ColorUtils.normalizeHex(c.color);
 
       const isSquare = currentShape() === 'square';
+      const orbR = baseOrbR * lightnessSizeFactor(n.l);
       const orbCornerR = orbR * 0.3;
 
       ctx.save();
