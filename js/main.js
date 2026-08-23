@@ -54,18 +54,20 @@
       Store.set({ characters: [], selectedTags: [] });
     });
 
-    let listActive = false;
-    const toggleBtn = document.getElementById('btn-toggle-list');
+    const wheelViewBtn = document.getElementById('btn-view-wheel');
+    const listViewBtn = document.getElementById('btn-view-list');
     const wheelStage = document.getElementById('wheel-stage');
     const wheelMain = document.querySelector('.wheel-main');
-    toggleBtn.addEventListener('click', () => {
-      listActive = !listActive;
-      wheelMain.classList.toggle('list-active', listActive);
-      wheelStage.hidden = listActive;
-      document.getElementById('list-view').hidden = !listActive;
-      toggleBtn.textContent = listActive ? '🎨 色相環で見る' : '📋 一覧で見る';
-      if (listActive) ListView.show(); else { ListView.hide(); updateEmptyState(); }
-    });
+    function setListActive(active) {
+      wheelMain.classList.toggle('list-active', active);
+      wheelStage.hidden = active;
+      document.getElementById('list-view').hidden = !active;
+      wheelViewBtn.classList.toggle('mode-btn-active', !active);
+      listViewBtn.classList.toggle('mode-btn-active', active);
+      if (active) ListView.show(); else { ListView.hide(); updateEmptyState(); }
+    }
+    wheelViewBtn.addEventListener('click', () => setListActive(false));
+    listViewBtn.addEventListener('click', () => setListActive(true));
   }
 
   function renderThemeSwitcher() {
