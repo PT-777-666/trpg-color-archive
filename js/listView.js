@@ -1,5 +1,5 @@
 /* listView.js — 登録済み全キャラクターをリスト表示し、タグ付けをまとめて行いやすくする画面。
- * 色相環の代わりに表示するトグル形式。タグの追加・削除は都度DBへ即保存する
+ * 色相環の代わりに表示するトグル形式。タグ・画像・カラーコードの変更は都度DBへ即保存する
  * (フォームのような「保存」操作は挟まない)。タグの絞り込み状態には影響されず、
  * 常に登録済み全員を表示する(タグが付いていない子も見失わないため)。
  * 並び順は色相環と揃う「色順」と、探しやすい「名前順」を切り替えられる。
@@ -8,15 +8,15 @@
   'use strict';
 
   let containerEl = null;
-  let lastFocusedCharId = null;
+  let lastFocused = null; // { charId, field: 'tag' | 'color' }
   let sortMode = 'hue'; // 'hue' | 'name'
 
   function tagChipHtml(tag, charId) {
     return `<span class="tag-chip" data-tag="${Utils.escapeHtml(tag)}">${Utils.escapeHtml(tag)}<button type="button" class="tag-chip-remove" data-char="${charId}" data-tag="${Utils.escapeHtml(tag)}" aria-label="削除">×</button></span>`;
   }
 
-  async function persistTags(character, tags) {
-    const updated = Object.assign({}, character, { tags, updatedAt: new Date().toISOString() });
+  async function persistUpdate(character, patch) {
+    const updated = Object.assign({}, character, patch, { updatedAt: new Date().toISOString() });
     await DB.putCharacter(updated);
     const chars = Store.get().characters.slice();
     const idx = chars.findIndex((c) => c.id === character.id);
@@ -63,10 +63,15 @@
         const sub = [c.occupation, c.system].filter(Boolean).join(' / ');
         return `
           <div class="lv-row" data-id="${c.id}">
-            <img class="lv-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
+            <label class="lv-avatar-wrap" title="クリックして画像を変更">
+              <img class="lv-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
+              <span class="lv-avatar-edit-badge" aria-hidden="true">✎</span>
+              <input type="file" accept="image/*" class="lv-image-input" data-id="${c.id}" hidden />
+            </label>
             <div class="lv-info">
               <div class="lv-name">${Utils.escapeHtml(c.name || '無名のキャラクター')}</div>
               <div class="lv-sub">${Utils.escapeHtml(sub)}</div>
+              <input type="text" class="lv-color-input" value="${hex}" maxlength="7" data-id="${c.id}" title="カラーコード" />
             </div>
             <div class="lv-tags-col">
               ${tags.map((t) => tagChipHtml(t, c.id)).join('')}
@@ -90,12 +95,12 @@
         const character = Store.get().characters.find((c) => c.id === btn.dataset.char);
         if (!character) return;
         const nextTags = (character.tags || []).filter((t) => t !== btn.dataset.tag);
-        await persistTags(character, nextTags);
+        await persistUpdate(character, { tags: nextTags });
       });
     });
 
     containerEl.querySelectorAll('.lv-tag-input').forEach((input) => {
-      input.addEventListener('focus', () => { lastFocusedCharId = input.dataset.id; });
+      input.addEventListener('focus', () => { lastFocused = { charId: input.dataset.id, field: 'tag' }; });
       input.addEventListener('keydown', async (e) => {
         if (e.key !== 'Enter') return;
         e.preventDefault();
@@ -107,14 +112,41 @@
         raw.split(/[,、]/).map((s) => s.trim()).filter(Boolean).forEach((tag) => {
           if (!nextTags.includes(tag)) nextTags.push(tag);
         });
-        await persistTags(character, nextTags);
+        await persistUpdate(character, { tags: nextTags });
       });
     });
 
-    // タグ追加/削除後の再描画で同じ行の入力欄にフォーカスを戻し、
-    // 1人にまとめてタグを打ち込む流れが途切れないようにする
-    if (lastFocusedCharId) {
-      const input = containerEl.querySelector(`.lv-tag-input[data-id="${lastFocusedCharId}"]`);
+    containerEl.querySelectorAll('.lv-color-input').forEach((input) => {
+      input.addEventListener('focus', () => { lastFocused = { charId: input.dataset.id, field: 'color' }; });
+      const commit = async () => {
+        const character = Store.get().characters.find((c) => c.id === input.dataset.id);
+        if (!character) return;
+        const hex = ColorUtils.normalizeHex(input.value);
+        if (hex === ColorUtils.normalizeHex(character.color || '')) return;
+        await persistUpdate(character, { color: hex });
+      };
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      });
+    });
+
+    containerEl.querySelectorAll('.lv-image-input').forEach((input) => {
+      input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const character = Store.get().characters.find((c) => c.id === input.dataset.id);
+        if (!character) return;
+        const dataUrl = await Utils.readFileAsDataUrl(file);
+        await persistUpdate(character, { image: dataUrl });
+      });
+    });
+
+    // 変更後の再描画で同じ行の入力欄にフォーカスを戻し、
+    // 1人にまとめて入力する流れが途切れないようにする(タグ欄・カラー欄それぞれ)
+    if (lastFocused) {
+      const selector = lastFocused.field === 'color' ? '.lv-color-input' : '.lv-tag-input';
+      const input = containerEl.querySelector(`${selector}[data-id="${lastFocused.charId}"]`);
       if (input) input.focus();
     }
   }

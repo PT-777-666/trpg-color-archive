@@ -541,17 +541,58 @@ a { color: var(--accent-text); }
   box-shadow: var(--clay-raised);
   flex-wrap: wrap;
 }
+.lv-avatar-wrap {
+  position: relative;
+  display: block;
+  width: 42px; height: 42px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
 .lv-avatar {
   width: 42px; height: 42px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--orb-color, var(--accent));
   background: var(--orb-color, #f2ece0);
-  flex-shrink: 0;
+  display: block;
 }
-.lv-info { min-width: 0; width: 150px; flex-shrink: 0; }
+.lv-avatar-edit-badge {
+  position: absolute;
+  right: -3px; bottom: -3px;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  background: var(--bg-panel);
+  box-shadow: var(--clay-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+.lv-avatar-wrap:hover .lv-avatar-edit-badge,
+.lv-avatar-wrap:focus-within .lv-avatar-edit-badge { opacity: 1; }
+
+.lv-info { min-width: 0; width: 150px; flex-shrink: 0; display: flex; flex-direction: column; gap: 3px; }
 .lv-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lv-sub { font-size: 11px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv-color-input {
+  width: 78px;
+  font-family: monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: rgba(var(--neutral-tint), 0.035);
+  color: var(--text-primary);
+}
+.lv-color-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(var(--neutral-tint), 0.06);
+}
 
 .lv-tags-col {
   flex: 1;
@@ -1158,7 +1199,8 @@ a { color: var(--accent-text); }
 :root[data-theme="vivid"] .cf-panel input:focus,
 :root[data-theme="vivid"] .cf-panel select:focus,
 :root[data-theme="vivid"] .cf-panel textarea:focus,
-:root[data-theme="vivid"] .lv-tag-input:focus {
+:root[data-theme="vivid"] .lv-tag-input:focus,
+:root[data-theme="vivid"] .lv-color-input:focus {
   border-color: var(--accent-text);
 }
 
