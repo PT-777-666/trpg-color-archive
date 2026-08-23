@@ -387,6 +387,13 @@ a { color: var(--accent-text); }
 }
 .theme-btn-active { background: var(--bg-panel); color: var(--accent-text); box-shadow: var(--clay-raised); font-weight: 600; }
 .mode-btn-active { background: var(--bg-panel); color: var(--accent-text); box-shadow: var(--clay-raised); }
+/* デフォルトのフォーカスリングは角丸ボタンでも四角く出ることがあるため、
+   形に確実に沿うbox-shadow版に差し替える(丸/角丸どちらのテーマでも) */
+.mode-btn:focus-visible,
+.theme-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
 
 /* ---------- 色相環ステージ ---------- */
 
@@ -633,6 +640,10 @@ a { color: var(--accent-text); }
 .lv-expand-toggle-open { color: var(--accent-text); box-shadow: var(--clay-pressed); transform: translateY(0); }
 .lv-expand-toggle-open:hover { box-shadow: var(--clay-pressed); transform: translateY(0); }
 .lv-expand-toggle-open .lv-expand-toggle-arrow { transform: rotate(180deg); }
+.lv-expand-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
 
 .lv-detail {
   flex-basis: 100%;
