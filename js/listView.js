@@ -3,8 +3,8 @@
  * (フォームのような「保存」操作は挟まない)。タグの絞り込み状態には影響されず、
  * 常に登録済み全員を表示する(タグが付いていない子も見失わないため)。
  * 並び順は色相環と揃う「色順」と、探しやすい「名前順」を切り替えられる。
- * 各行の▾を押すと、ホバーカードと同じ内容(シナリオ・HO・紹介文など)を
- * その場で開閉できる(展開状態はexpandedIdsで保持し、再描画をまたいで残す)。
+ * 各行の▾を押すと、シナリオ・HO・年齢・職業・性別・身長・紹介文を
+ * その場で開いて編集できる(展開状態はexpandedIdsで保持し、再描画をまたいで残す)。
  */
 (function (global) {
   'use strict';
@@ -18,25 +18,30 @@
     return `<span class="tag-chip" data-tag="${Utils.escapeHtml(tag)}">${Utils.escapeHtml(tag)}<button type="button" class="tag-chip-remove" data-char="${charId}" data-tag="${Utils.escapeHtml(tag)}" aria-label="削除">×</button></span>`;
   }
 
-  function detailFieldRow(label, value) {
-    if (!value) return '';
-    return `<div class="hc-row"><span class="hc-label">${label}</span><span class="hc-value">${Utils.escapeHtml(value)}</span></div>`;
+  function detailFieldHtml(c, label, field) {
+    return `
+      <div class="lv-detail-field">
+        <label class="lv-detail-label">${label}</label>
+        <input type="text" class="lv-detail-input" data-id="${c.id}" data-field="${field}" value="${Utils.escapeHtml(c[field] || '')}" />
+      </div>
+    `;
   }
 
   function detailHtml(c) {
-    const rows = [
-      detailFieldRow('シナリオ', c.scenario),
-      detailFieldRow('HO', c.ho),
-      detailFieldRow('年齢', c.age),
-      detailFieldRow('職業', c.occupation),
-      detailFieldRow('性別', c.gender),
-      detailFieldRow('身長', c.height)
-    ].join('');
     return `
       <div class="lv-detail">
-        ${rows ? `<div class="lv-detail-rows">${rows}</div>` : ''}
-        ${c.description ? `<p class="lv-detail-desc">${Utils.escapeHtml(c.description)}</p>` : ''}
-        ${!rows && !c.description ? '<p class="lv-detail-empty">詳細情報はまだありません。</p>' : ''}
+        <div class="lv-detail-grid">
+          ${detailFieldHtml(c, 'シナリオ', 'scenario')}
+          ${detailFieldHtml(c, 'HO', 'ho')}
+          ${detailFieldHtml(c, '年齢', 'age')}
+          ${detailFieldHtml(c, '職業', 'occupation')}
+          ${detailFieldHtml(c, '性別', 'gender')}
+          ${detailFieldHtml(c, '身長', 'height')}
+        </div>
+        <div class="lv-detail-field lv-detail-field-full">
+          <label class="lv-detail-label">紹介文</label>
+          <textarea class="lv-detail-input" data-id="${c.id}" data-field="description" rows="2">${Utils.escapeHtml(c.description || '')}</textarea>
+        </div>
       </div>
     `;
   }
@@ -191,6 +196,24 @@
       });
     });
 
+    containerEl.querySelectorAll('.lv-detail-input').forEach((input) => {
+      const field = input.dataset.field;
+      input.addEventListener('focus', () => { lastFocused = { charId: input.dataset.id, field }; });
+      const commit = async () => {
+        const character = Store.get().characters.find((c) => c.id === input.dataset.id);
+        if (!character) return;
+        const value = input.value.trim();
+        if (value === (character[field] || '')) return;
+        await persistUpdate(character, { [field]: value });
+      };
+      input.addEventListener('blur', commit);
+      if (input.tagName === 'INPUT') {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+        });
+      }
+    });
+
     containerEl.querySelectorAll('.lv-image-input').forEach((input) => {
       input.addEventListener('change', async (e) => {
         const file = e.target.files[0];
@@ -203,9 +226,12 @@
     });
 
     // 変更後の再描画で同じ行の入力欄にフォーカスを戻し、
-    // 1人にまとめて入力する流れが途切れないようにする(タグ欄・カラー欄それぞれ)
+    // 1人にまとめて入力する流れが途切れないようにする(タグ欄・カラー欄・詳細欄それぞれ)
     if (lastFocused) {
-      const selector = lastFocused.field === 'color' ? '.lv-color-input' : '.lv-tag-input';
+      let selector;
+      if (lastFocused.field === 'color') selector = '.lv-color-input';
+      else if (lastFocused.field === 'tag') selector = '.lv-tag-input';
+      else selector = `.lv-detail-input[data-field="${lastFocused.field}"]`;
       const input = containerEl.querySelector(`${selector}[data-id="${lastFocused.charId}"]`);
       if (input) input.focus();
     }
