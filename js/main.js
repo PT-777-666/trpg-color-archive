@@ -79,7 +79,7 @@
     const total = state.characters.length;
     const visible = Store.filteredCharacters().length;
     if (state.selectedTags.length === 0) {
-      el.textContent = `${total}人のキャラクターを収蔵`;
+      el.textContent = `${total}人のキャラクターを登録`;
     } else {
       el.textContent = `${visible} / ${total}人が「${state.selectedTags.join(' + ')}」(${state.filterMode})に該当`;
     }
