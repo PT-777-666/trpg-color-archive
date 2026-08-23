@@ -68,6 +68,34 @@
     `;
   }
 
+  function rowHtml(c) {
+    const hex = ColorUtils.normalizeHex(c.color || '#c9a876');
+    const img = c.image || global.Avatar.placeholderDataUri(hex, c.name);
+    const tags = c.tags || [];
+    const sub = [c.occupation, c.system].filter(Boolean).join(' / ');
+    const expanded = expandedIds.has(c.id);
+    return `
+      <div class="lv-row" data-id="${c.id}">
+        <button type="button" class="lv-expand-toggle${expanded ? ' lv-expand-toggle-open' : ''}" data-id="${c.id}" aria-label="詳細を開閉" aria-expanded="${expanded}">▾</button>
+        <label class="lv-avatar-wrap" title="クリックして画像を変更">
+          <img class="lv-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
+          <span class="lv-avatar-edit-badge" aria-hidden="true">✎</span>
+          <input type="file" accept="image/*" class="lv-image-input" data-id="${c.id}" hidden />
+        </label>
+        <div class="lv-info">
+          <div class="lv-name">${Utils.escapeHtml(c.name || '無名のキャラクター')}</div>
+          <div class="lv-sub">${Utils.escapeHtml(sub)}</div>
+          <input type="text" class="lv-color-input" value="${hex}" maxlength="7" data-id="${c.id}" title="カラーコード" />
+        </div>
+        <div class="lv-tags-col">
+          ${tags.map((t) => tagChipHtml(t, c.id)).join('')}
+          <input type="text" class="lv-tag-input" list="lv-tag-suggestions" placeholder="タグを入力してEnter" data-id="${c.id}" />
+        </div>
+        ${expanded ? detailHtml(c) : ''}
+      </div>
+    `;
+  }
+
   function render() {
     if (!containerEl || containerEl.hidden) return;
     const all = Store.get().characters;
@@ -77,38 +105,21 @@
       return;
     }
 
-    const characters = sortMode === 'name' ? byName(all) : byHue(all);
+    // カラーコード未設定の子は色相環上でも位置が定まらないので、別枠にまとめて
+    // 見つけやすくする(彩度0の灰色として中心付近に埋もれがちなため)。
+    const noColor = all.filter((c) => !c.color);
+    const withColor = all.filter((c) => c.color);
+    const sorted = sortMode === 'name' ? byName(withColor) : byHue(withColor);
     const suggestions = Store.allTags();
     containerEl.innerHTML = `
       ${sortToggleHtml()}
       <datalist id="lv-tag-suggestions">${suggestions.map((t) => `<option value="${Utils.escapeHtml(t)}"></option>`).join('')}</datalist>
-      ${characters.map((c) => {
-        const hex = ColorUtils.normalizeHex(c.color || '#c9a876');
-        const img = c.image || global.Avatar.placeholderDataUri(hex, c.name);
-        const tags = c.tags || [];
-        const sub = [c.occupation, c.system].filter(Boolean).join(' / ');
-        const expanded = expandedIds.has(c.id);
-        return `
-          <div class="lv-row" data-id="${c.id}">
-            <button type="button" class="lv-expand-toggle${expanded ? ' lv-expand-toggle-open' : ''}" data-id="${c.id}" aria-label="詳細を開閉" aria-expanded="${expanded}">▾</button>
-            <label class="lv-avatar-wrap" title="クリックして画像を変更">
-              <img class="lv-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
-              <span class="lv-avatar-edit-badge" aria-hidden="true">✎</span>
-              <input type="file" accept="image/*" class="lv-image-input" data-id="${c.id}" hidden />
-            </label>
-            <div class="lv-info">
-              <div class="lv-name">${Utils.escapeHtml(c.name || '無名のキャラクター')}</div>
-              <div class="lv-sub">${Utils.escapeHtml(sub)}</div>
-              <input type="text" class="lv-color-input" value="${hex}" maxlength="7" data-id="${c.id}" title="カラーコード" />
-            </div>
-            <div class="lv-tags-col">
-              ${tags.map((t) => tagChipHtml(t, c.id)).join('')}
-              <input type="text" class="lv-tag-input" list="lv-tag-suggestions" placeholder="タグを入力してEnter" data-id="${c.id}" />
-            </div>
-            ${expanded ? detailHtml(c) : ''}
-          </div>
-        `;
-      }).join('')}
+      ${noColor.length > 0 ? `
+        <p class="lv-section-label lv-section-label-warn">⚠ カラー未設定(${noColor.length}人)</p>
+        ${noColor.map(rowHtml).join('')}
+        <p class="lv-section-label">カラー設定済み</p>
+      ` : ''}
+      ${sorted.map(rowHtml).join('')}
     `;
 
     containerEl.querySelectorAll('.lv-expand-toggle').forEach((btn) => {
