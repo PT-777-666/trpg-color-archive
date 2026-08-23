@@ -52,30 +52,35 @@
     const stage = document.getElementById('wheel-stage');
     const stageRect = stage.getBoundingClientRect();
     const anchorRect = anchorEl.getBoundingClientRect();
+    const anchorCx = anchorRect.left + anchorRect.width / 2;
+    const anchorCy = anchorRect.top + anchorRect.height / 2;
+    const stageCx = stageRect.left + stageRect.width / 2;
+    const stageCy = stageRect.top + stageRect.height / 2;
 
     cardEl.style.visibility = 'hidden';
     cardEl.style.display = 'block';
     const cardRect = cardEl.getBoundingClientRect();
 
     const margin = 14;
-    let left = anchorRect.right + margin;
-    let top = anchorRect.top + anchorRect.height / 2 - cardRect.height / 2;
+    // 輪の中心からオーブへ向かう向きの延長線上(=輪の外側)にカードを出す。
+    // 単純に「右優先、はみ出したら左」だと輪の左半分のオーブでは
+    // 中心側にカードが出てしまうため、角度に応じた向きを都度計算する。
+    let dx = anchorCx - stageCx;
+    let dy = anchorCy - stageCy;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 1) { dx = 0; dy = -1; } else { dx /= dist; dy /= dist; }
 
-    // 右にはみ出す場合は左側に
-    if (left + cardRect.width > window.innerWidth - 12) {
-      left = anchorRect.left - margin - cardRect.width;
-    }
-    // それでも左に収まらない場合は下側に
-    if (left < 12) {
-      left = ColorUtils.clamp(anchorRect.left + anchorRect.width / 2 - cardRect.width / 2, 12, window.innerWidth - cardRect.width - 12);
-      top = anchorRect.bottom + margin;
-    }
+    const offset = anchorRect.width / 2 + margin + Math.max(cardRect.width, cardRect.height) / 2;
+    let left = anchorCx + dx * offset - cardRect.width / 2;
+    let top = anchorCy + dy * offset - cardRect.height / 2;
+
+    // それでも画面外にはみ出す場合は収まる範囲にクランプする
+    left = ColorUtils.clamp(left, 12, window.innerWidth - cardRect.width - 12);
     top = ColorUtils.clamp(top, 12, window.innerHeight - cardRect.height - 12);
 
     cardEl.style.left = `${left}px`;
     cardEl.style.top = `${top}px`;
     cardEl.style.visibility = 'visible';
-    void stageRect; // keep for future viewport-relative tweaks
   }
 
   function show(id, anchorEl) {
