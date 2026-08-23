@@ -73,13 +73,18 @@
       const { h, s, l } = ColorUtils.hexToHsl(c.color);
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
-      const maxR = baseMaxR * boundaryFraction(angleDeg);
       // 彩度を主、明度を従(±15%の変調のみ)にする。均等に混ぜると彩度の高い
       // 普通の色まで軒並み中心寄りになってしまうため、彩度の重みを残す。
       const satFrac = ColorUtils.clamp(s, 0, 100) / 100;
       const lightFactor = 0.85 + 0.15 * (ColorUtils.clamp(l, 0, 100) / 100);
       const vividness = satFrac * lightFactor;
-      const r = minR + vividness * (maxR - minR);
+      // 半径は形に関わらず同じ基準(baseMaxR)で計算し、輪の形が円でない場合は
+      // 「その角度での本当の輪の外周」を超えないよう上限だけかける。
+      // (輪の形で最大半径そのものを縮めると、円のときより全体的に中心寄りに
+      // 見えてしまうため、あくまで上限としてのみ効かせる)
+      const rUncapped = minR + vividness * (baseMaxR - minR);
+      const trueBoundaryR = baseMaxR * boundaryFraction(angleDeg);
+      const r = Math.min(rUncapped, trueBoundaryR);
       return {
         id: c.id,
         tx: cx + r * Math.cos(angleRad),
