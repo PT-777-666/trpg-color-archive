@@ -385,7 +385,7 @@ a { color: var(--accent-text); }
   padding: 4px;
   border-radius: 999px;
   background: var(--bg-panel);
-  box-shadow: var(--clay-pressed);
+  border: 1px solid var(--glass-border);
   flex-shrink: 0;
 }
 .mode-btn {
@@ -406,7 +406,7 @@ a { color: var(--accent-text); }
   padding: 4px;
   border-radius: 999px;
   background: var(--bg-panel);
-  box-shadow: var(--clay-pressed);
+  border: 1px solid var(--glass-border);
   flex-shrink: 0;
 }
 .theme-btn {
@@ -419,8 +419,8 @@ a { color: var(--accent-text); }
   cursor: pointer;
   transition: box-shadow 0.2s ease, color 0.2s ease, background 0.2s ease;
 }
-.theme-btn-active { background: var(--bg-panel); color: var(--accent-text); box-shadow: var(--clay-raised); font-weight: 600; }
-.mode-btn-active { background: var(--bg-panel); color: var(--accent-text); box-shadow: var(--clay-raised); }
+.theme-btn-active { background: var(--accent-soft); color: var(--accent-text); font-weight: 600; }
+.mode-btn-active { background: var(--accent-soft); color: var(--accent-text); }
 /* デフォルトのフォーカスリングは角丸ボタンでも四角く出ることがあるため、
    形に確実に沿うbox-shadow版に差し替える(丸/角丸どちらのテーマでも) */
 .mode-btn:focus-visible,
@@ -440,7 +440,7 @@ a { color: var(--accent-text); }
 .view-toggle-large {
   padding: 6px;
   gap: 6px;
-  box-shadow: var(--clay-pressed), 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 .view-toggle-large .mode-btn {
   padding: 12px 32px;
