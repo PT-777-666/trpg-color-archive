@@ -26,10 +26,10 @@
       const btn = e.currentTarget;
       const label = document.getElementById('btn-save-image-label');
       const original = label.textContent;
+      const transparent = confirm('背景を透明にして保存しますか？\n「OK」で背景透明、「キャンセル」で通常通り背景ありで保存します。');
       btn.disabled = true;
       label.textContent = '画像を作成中…';
       try {
-        const transparent = document.getElementById('btn-save-image-transparent').checked;
         await Wheel.exportImage({ transparent });
       } finally {
         btn.disabled = false;
