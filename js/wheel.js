@@ -22,6 +22,15 @@
   let lastLayoutKey = '';
   let lastCharCount = -1;
 
+  // 色が近いオーブ同士が重なったとき、最後に触れた(ホバー/フォーカス/クリックした)
+  // オーブがそのまま最前面に残るようにする。CSSの:hoverだけだと指を離した瞬間に
+  // 元の重なり順へ戻ってしまい、埋もれた側を選び直せなかったための対応。
+  let zCounter = 2;
+  function bringToFront(el) {
+    zCounter += 1;
+    el.style.zIndex = zCounter;
+  }
+
   const WHEEL_HUE_STOPS = []; // 角度の刻み。CSSとCanvas書き出しで共有する。
   for (let h = 0; h <= 360; h += 30) WHEEL_HUE_STOPS.push(h);
 
@@ -83,10 +92,14 @@
     orbsLayerEl.appendChild(el);
     orbEls.set(character.id, el);
 
-    const onEnter = () => global.HoverCard && global.HoverCard.show(character.id, el);
+    const onEnter = () => {
+      bringToFront(el);
+      global.HoverCard && global.HoverCard.show(character.id, el);
+    };
     const onLeave = () => global.HoverCard && global.HoverCard.hide(character.id);
     const onClick = (e) => {
       e.stopPropagation();
+      bringToFront(el);
       if (Utils.isTouchDevice()) {
         if (global.HoverCard && global.HoverCard.isShowing(character.id)) {
           global.DetailModal.open(character.id);
