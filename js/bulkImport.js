@@ -102,8 +102,20 @@
     renderList();
   }
 
+  let saving = false;
+
   async function saveAll() {
-    if (staged.length === 0) return;
+    if (staged.length === 0 || saving) return;
+    saving = true;
+    panelEl.querySelector('#bi-save').disabled = true;
+    try {
+      await saveAllInner();
+    } finally {
+      saving = false;
+    }
+  }
+
+  async function saveAllInner() {
     const now = new Date().toISOString();
     const characters = staged.map((c) => ({
       id: c.id,
