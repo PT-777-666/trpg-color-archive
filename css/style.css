@@ -1285,7 +1285,8 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
    選択中はライムで塗りつぶし、影を消して押し込まれたように見せる */
 :root[data-theme="vivid"] .tag-mode-toggle,
 :root[data-theme="vivid"] .theme-switcher {
-  background: none;
+  /* 背景の方眼グリッドがボタンの隙間から透けないよう、ページ背景と同じ色で覆う */
+  background: var(--bg-void);
   box-shadow: none;
   border: none;
   border-radius: 0;
@@ -1319,6 +1320,7 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 :root[data-theme="vivid"] .tag-pill,
 :root[data-theme="vivid"] .tag-chip {
   border: 2px solid #0a0a0a;
+  border-radius: 8px;
 }
 :root[data-theme="vivid"] .tag-pill-active {
   background: var(--accent);
