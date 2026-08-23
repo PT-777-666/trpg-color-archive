@@ -36,11 +36,16 @@
     }
   ];
 
+  // 文章を「。」ごとに改行する(1文1行の方が読みやすいため)
+  function breakSentences(text) {
+    return text.replace(/。(?!$)/g, '。<br>');
+  }
+
   function markup() {
     const steps = STEPS.map((s) => `
       <li class="ug-step">
         <h3 class="ug-step-title">${s.title}</h3>
-        <p class="ug-step-body">${s.body}</p>
+        <p class="ug-step-body">${breakSentences(s.body)}</p>
       </li>
     `).join('');
     return `
