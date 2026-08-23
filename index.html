@@ -48,10 +48,7 @@
   <header class="app-header">
     <div class="app-title-block">
       <h1 class="app-title">キャラクター色相環ソート</h1>
-      <div class="ug-wrap">
-        <button type="button" id="btn-usage-guide" class="app-usage-btn" aria-expanded="false">💡 使い方を見る <span class="app-usage-btn-arrow" aria-hidden="true">▾</span></button>
-        <div id="ug-dropdown" class="ug-dropdown" hidden></div>
-      </div>
+      <button type="button" id="btn-usage-guide" class="app-usage-btn" aria-expanded="false">💡 使い方を見る <span class="app-usage-btn-arrow" aria-hidden="true">▾</span></button>
     </div>
     <div class="app-header-actions">
       <button type="button" id="btn-add-character" class="btn btn-primary">＋ 新規キャラクター</button>
@@ -62,6 +59,8 @@
       <button type="button" id="btn-delete-all" class="btn btn-danger btn-small"><svg class="btn-icon-svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>全キャラクターを削除</button>
     </div>
   </header>
+
+  <div id="ug-dropdown" class="ug-dropdown" hidden></div>
 
   <div class="view-toggle-bar">
     <div class="view-toggle tag-mode-toggle view-toggle-large" role="group" aria-label="表示切り替え">
