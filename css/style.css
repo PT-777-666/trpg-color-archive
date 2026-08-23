@@ -527,6 +527,7 @@ a { color: var(--accent-text); }
   align-self: stretch;
 }
 .list-view[hidden] { display: none; }
+.lv-sort-toggle { align-self: flex-start; margin-bottom: 2px; }
 
 .lv-empty { color: var(--secondary-on-void); font-size: 13px; text-align: center; padding: 40px 0; }
 
