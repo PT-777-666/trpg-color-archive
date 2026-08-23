@@ -547,6 +547,11 @@ a { color: var(--accent-text); }
   width: 42px; height: 42px;
   flex-shrink: 0;
   cursor: pointer;
+  border-radius: 50%;
+}
+.lv-avatar-wrap:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
 }
 .lv-avatar {
   width: 42px; height: 42px;
@@ -1236,8 +1241,11 @@ a { color: var(--accent-text); }
 
 :root[data-theme="vivid"] .hc-avatar,
 :root[data-theme="vivid"] .bi-avatar,
-:root[data-theme="vivid"] .lv-avatar {
+:root[data-theme="vivid"] .lv-avatar,
+:root[data-theme="vivid"] .lv-avatar-wrap {
   border-radius: 8px;
+}
+:root[data-theme="vivid"] .lv-avatar {
   border-color: #0a0a0a;
 }
 :root[data-theme="vivid"] .dm-avatar {
