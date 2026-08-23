@@ -49,26 +49,15 @@
     return 0.7 + 0.6 * (ColorUtils.clamp(l, 0, 100) / 100); // 0.7倍(暗)〜1.3倍(明)
   }
 
-  // 正方形の輪では、角(45°ずれ)の方向が辺の中点方向より外側まで伸びる。
-  // その比率(0〜1に正規化、1.0が最も外側)を角度から返し、配置計算で
-  // 「輪のすぐ内側」を形に関わらず正しく再現するために使う。円は角度に依らず一定。
-
-  // 軸に揃った(回転していない)正方形。辺の中点方向が最も近く、角(45°ずれ)が最も遠い。
-  function squareBoundaryFraction(angleDeg) {
-    const a = (angleDeg * Math.PI) / 180;
-    const raw = 1 / Math.max(Math.abs(Math.cos(a)), Math.abs(Math.sin(a))); // 1.0〜√2
-    return raw / Math.SQRT2;
-  }
-
   function currentShape() {
     const colors = global.ThemeManager ? global.ThemeManager.getThemeColors() : null;
     return (colors && colors.shape) || 'circle';
   }
 
-  function boundaryFraction(angleDeg) {
-    return currentShape() === 'square' ? squareBoundaryFraction(angleDeg) : 1;
-  }
-
+  // baseMaxR(size/2の93%)は円の外周に対する安全マージンとして選んだ値だが、
+  // 正方形の「辺の中点」方向の外周までの距離もちょうどsize/2(=93%より外側)
+  // なので、角度によらずこのbaseMaxRをそのまま使って安全(角の方向は
+  // なおさら余裕がある)。形ごとに最大半径を縮める必要はない。
   function computeTargets(characters, size) {
     const cx = size / 2, cy = size / 2;
     const baseMaxR = size / 2 * 0.93;
@@ -78,13 +67,7 @@
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
       const satFrac = ColorUtils.clamp(s, 0, 100) / 100;
-      // 半径は形に関わらず同じ基準(baseMaxR)で計算し、輪の形が円でない場合は
-      // 「その角度での本当の輪の外周」を超えないよう上限だけかける。
-      // (輪の形で最大半径そのものを縮めると、円のときより全体的に中心寄りに
-      // 見えてしまうため、あくまで上限としてのみ効かせる)
-      const rUncapped = minR + satFrac * (baseMaxR - minR);
-      const trueBoundaryR = baseMaxR * boundaryFraction(angleDeg);
-      const r = Math.min(rUncapped, trueBoundaryR);
+      const r = minR + satFrac * (baseMaxR - minR);
       return {
         id: c.id,
         l,
