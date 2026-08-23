@@ -31,6 +31,15 @@
       textPrimary: '#e4e8f0',
       accentText: '#d3dce8',
       textFaint: '#7d859c'
+    },
+    hotaru: {
+      label: '蛍',
+      wheelSat: 85,
+      wheelLight: 55,
+      bgVoid: '#080d0a',
+      textPrimary: '#eafaf1',
+      accentText: '#39ff8f',
+      textFaint: '#74a888'
     }
   };
 

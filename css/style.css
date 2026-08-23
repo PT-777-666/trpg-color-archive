@@ -63,6 +63,46 @@
   --shadow-deep: 0 20px 55px rgba(0, 0, 0, 0.45);
 }
 
+/* 蛍(ほたる) — 深い闇に浮かぶ蛍光グリーンの光をイメージした、ネオン系のテーマ。
+ * ボタンやタグの縁にだけ発光をのせ、本文の文字は淡いミントで読みやすさを保つ。 */
+:root[data-theme="hotaru"] {
+  --bg-void: #080d0a;
+  --bg-void-rgb: 8, 13, 10;
+  --bg-panel: #0f1a13;
+  --bg-panel-raised: #142219;
+  --neutral-tint: 170, 255, 200;
+  --glass-fill: rgba(var(--neutral-tint), 0.05);
+  --glass-fill-strong: rgba(var(--neutral-tint), 0.09);
+  --glass-border: rgba(150, 255, 190, 0.16);
+  --text-primary: #eafaf1;
+  --text-secondary: #9fd6b4;
+  --text-faint: #74a888;
+  --accent: #39ff8f;
+  --accent-text: #39ff8f;
+  --accent-soft: rgba(57, 255, 143, 0.16);
+  --accent-gradient-end: #1fa860;
+  --btn-primary-text: #04140a;
+  --danger: #ff5c5c;
+  --danger-soft: rgba(255, 92, 92, 0.14);
+  --shadow-tint: 0, 0, 0;
+  --highlight-tint: 80, 255, 160;
+  --blob-blend: screen;
+  --shadow-deep: 0 20px 55px rgba(0, 0, 0, 0.55), 0 0 40px rgba(57, 255, 143, 0.08);
+  /* ボタン等の立体感トークンもこのテーマだけ上書きし、緑の発光を足す */
+  --clay-raised:
+    0 0 10px rgba(57, 255, 143, 0.25),
+    4px 6px 14px rgba(var(--shadow-tint), 0.45),
+    inset 1px 1px 1px rgba(var(--highlight-tint), 0.12);
+  --clay-raised-hover:
+    0 0 16px rgba(57, 255, 143, 0.4),
+    5px 8px 17px rgba(var(--shadow-tint), 0.5),
+    inset 1px 1px 1px rgba(var(--highlight-tint), 0.16);
+  --clay-pressed:
+    inset 0 0 10px rgba(57, 255, 143, 0.25),
+    inset 3px 4px 9px rgba(var(--shadow-tint), 0.5),
+    inset -1px -1px 3px rgba(var(--highlight-tint), 0.1);
+}
+
 * { box-sizing: border-box; }
 
 html, body {
