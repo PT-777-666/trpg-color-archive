@@ -3,7 +3,7 @@
  */
 
 :root {
-  /* ---- クレイ(デフォルト)テーマ ---- */
+  /* ---- パステル(デフォルト)テーマ ---- */
   --bg-void: #faf6ef;
   --bg-void-rgb: 250, 246, 239;
   --bg-panel: #ffffff;
@@ -36,17 +36,17 @@
   --wheel-void: var(--bg-void);
   --wheel-void-rgb: var(--bg-void-rgb);
   /* 背景(void)に直接乗る文字の色。通常は各テーマの本文色と同じだが、
-     紫電のようにvoid自体が濃い色のテーマでは白系に上書きする */
+     ビビッドのようにvoid自体が濃い色のテーマでは白系に上書きする */
   --title-on-void: var(--text-primary);
   --label-on-void: var(--accent-text);
   --body-on-void: var(--text-faint);
   --secondary-on-void: var(--text-secondary);
 }
 
-/* 紫電(しでん) — 紫の背景に黒ベタ枠とライムイエロー。Web3/NFTマーケットプレイス風の
- * ネオブルータリズムなテーマ。柔らかい「クレイ」の立体感とは別物なので、
+/* ビビッド — 紫の背景に黒ベタ枠とライムイエロー。Web3/NFTマーケットプレイス風の
+ * ネオブルータリズムなテーマ。柔らかい「パステル」の立体感とは別物なので、
  * --clay-raised系や角丸のトークンもこのテーマだけ丸ごと上書きしている。 */
-:root[data-theme="shiden"] {
+:root[data-theme="vivid"] {
   --bg-void: #6C4DF5;
   --bg-void-rgb: 108, 77, 245;
   --bg-panel: #ffffff;
@@ -1023,68 +1023,68 @@ a { color: var(--accent-text); }
   border-top: 1px solid var(--glass-border);
 }
 
-/* ---------- 紫電テーマ専用の構造上書き ----------
+/* ---------- ビビッドテーマ専用の構造上書き ----------
  * 六角形のclip-pathをやめて角丸スクエアにし、ボタンやカードには
  * 太めの黒枠を足す。色トークンだけでは表現できない部分をここでまとめる。 */
 
-:root[data-theme="shiden"] .wheel-ring,
-:root[data-theme="shiden"] .wheel-void,
-:root[data-theme="shiden"] .wheel-rings-deco {
+:root[data-theme="vivid"] .wheel-ring,
+:root[data-theme="vivid"] .wheel-void,
+:root[data-theme="vivid"] .wheel-rings-deco {
   border-radius: 10px;
 }
-:root[data-theme="shiden"] .wheel-ring {
+:root[data-theme="vivid"] .wheel-ring {
   border: 3px solid #0a0a0a;
   box-shadow: 6px 6px 0 #0a0a0a;
 }
-:root[data-theme="shiden"] .orb-img {
+:root[data-theme="vivid"] .orb-img {
   border-radius: 8px;
   border: 2.5px solid #0a0a0a;
   box-shadow: 3px 3px 0 #0a0a0a;
 }
-:root[data-theme="shiden"] .orb:hover .orb-img,
-:root[data-theme="shiden"] .orb:focus-visible .orb-img {
+:root[data-theme="vivid"] .orb:hover .orb-img,
+:root[data-theme="vivid"] .orb:focus-visible .orb-img {
   box-shadow: 5px 5px 0 #0a0a0a;
 }
 @media (hover: none) {
-  :root[data-theme="shiden"] .orb:hover .orb-img { box-shadow: 3px 3px 0 #0a0a0a; }
+  :root[data-theme="vivid"] .orb:hover .orb-img { box-shadow: 3px 3px 0 #0a0a0a; }
 }
 
-:root[data-theme="shiden"] .btn {
+:root[data-theme="vivid"] .btn {
   border: 2.5px solid #0a0a0a;
   border-radius: 8px;
 }
-:root[data-theme="shiden"] .tag-pill,
-:root[data-theme="shiden"] .tag-chip {
+:root[data-theme="vivid"] .tag-pill,
+:root[data-theme="vivid"] .tag-chip {
   border: 2px solid #0a0a0a;
 }
-:root[data-theme="shiden"] .tag-pill-active {
+:root[data-theme="vivid"] .tag-pill-active {
   background: var(--accent);
   color: #0a0a0a;
 }
 
-:root[data-theme="shiden"] .hover-card,
-:root[data-theme="shiden"] .dm-panel,
-:root[data-theme="shiden"] .cf-panel,
-:root[data-theme="shiden"] .bi-panel {
+:root[data-theme="vivid"] .hover-card,
+:root[data-theme="vivid"] .dm-panel,
+:root[data-theme="vivid"] .cf-panel,
+:root[data-theme="vivid"] .bi-panel {
   border-radius: 12px;
   border: 2.5px solid #0a0a0a;
   border-top: 2.5px solid #0a0a0a;
 }
 
-:root[data-theme="shiden"] .hc-avatar,
-:root[data-theme="shiden"] .bi-avatar {
+:root[data-theme="vivid"] .hc-avatar,
+:root[data-theme="vivid"] .bi-avatar {
   border-radius: 8px;
   border-color: #0a0a0a;
 }
-:root[data-theme="shiden"] .dm-avatar {
+:root[data-theme="vivid"] .dm-avatar {
   border-radius: 10px;
   border: 3px solid #0a0a0a;
 }
-:root[data-theme="shiden"] .cf-image-preview {
+:root[data-theme="vivid"] .cf-image-preview {
   border-radius: 10px;
   border: 2px solid #0a0a0a;
 }
-:root[data-theme="shiden"] .cf-color-preview {
+:root[data-theme="vivid"] .cf-color-preview {
   border-radius: 8px;
   border: 2px solid #0a0a0a;
 }

@@ -8,14 +8,14 @@
   'use strict';
 
   const STORAGE_KEY = 'trpg-character-archive:theme';
-  const DEFAULT_THEME = 'clay';
+  const DEFAULT_THEME = 'pastel';
 
   // Canvas書き出しなど、CSSのcomputed styleを都度読みに行くと重い/複雑になる
   // 箇所のために、テーマごとの値をここにも保持しておく。
   // 数値はCSS側の :root / [data-theme="..."] の値と揃えること。
   const THEMES = {
-    clay: {
-      label: 'クレイ',
+    pastel: {
+      label: 'パステル',
       wheelSat: 77,
       wheelLight: 71,
       bgVoid: '#faf6ef',
@@ -25,8 +25,8 @@
       textFaint: '#8f8371',
       shape: 'circle'
     },
-    shiden: {
-      label: '紫電',
+    vivid: {
+      label: 'ビビッド',
       wheelSat: 80,
       wheelLight: 62,
       bgVoid: '#6C4DF5',

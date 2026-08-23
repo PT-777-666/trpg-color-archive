@@ -273,7 +273,7 @@
     ctx.closePath();
   }
 
-  // 紫電テーマの角丸スクエア用パス。rは正方形の半幅として扱う。
+  // ビビッドテーマの角丸スクエア用パス。rは正方形の半幅として扱う。
   function roundedSquarePath(ctx, cx, cy, r, cornerR) {
     ctx.beginPath();
     ctx.roundRect(cx - r, cy - r, r * 2, r * 2, Math.min(cornerR, r));
@@ -379,7 +379,7 @@
     ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
     ctx.restore();
 
-    // 環の輪郭(紫電は太い黒枠、それ以外は薄い白のライン)
+    // 環の輪郭(ビビッドは太い黒枠、それ以外は薄い白のライン)
     ctx.save();
     shapePath(ctx, cx, cy, radius, 40);
     if (currentShape() === 'square') {
@@ -415,7 +415,7 @@
       ctx.restore();
 
       if (isSquare) {
-        // 紫電は太い黒枠のみ(背景色のリングは使わない)
+        // ビビッドは太い黒枠のみ(背景色のリングは使わない)
         shapePath(ctx, x, y, orbR, orbCornerR);
         ctx.lineWidth = 3;
         ctx.strokeStyle = '#0a0a0a';
