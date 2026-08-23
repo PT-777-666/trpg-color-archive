@@ -1,7 +1,7 @@
 # static-server.ps1 - zero-dependency static file server (uses only .NET HttpListener)
 # Used to serve this app locally when Node.js / Python are not available.
 param(
-  [int]$Port = 8801,
+  [int]$Port = 8850,
   [string]$Root = (Split-Path -Parent $PSScriptRoot)
 )
 
