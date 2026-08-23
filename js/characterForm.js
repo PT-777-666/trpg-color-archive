@@ -186,7 +186,10 @@
           <a href="#" id="cf-bookmarklet" class="btn btn-primary btn-small cf-bookmarklet" title="ブックマークバーにドラッグしてください">📥 いあきゃら取り込み</a>
           <textarea id="cf-iachara-paste" rows="4" placeholder="ここにコピーしたJSONを貼り付け"></textarea>
           <button type="button" id="cf-iachara-apply" class="btn btn-ghost btn-small">反映する</button>
-          <p class="cf-hint">複数人まとめて登録したい場合は、<button type="button" id="cf-open-bulk" class="cf-inline-link">一括登録</button>が便利です。</p>
+          <div class="cf-bulk-cta">
+            <span class="cf-bulk-cta-text">複数人まとめて登録したいときは</span>
+            <button type="button" id="cf-open-bulk" class="btn btn-primary btn-small">📋 一括登録はこちら</button>
+          </div>
         </div>
       </div>
 

@@ -948,16 +948,17 @@ a { color: var(--accent-text); }
 .cf-color-row input[type="text"] { font-family: monospace; border-radius: 20px; }
 
 .cf-hint { font-size: 11px; color: var(--text-faint); line-height: 1.6; margin-top: 6px; }
-.cf-inline-link {
-  border: none;
-  background: none;
-  padding: 0;
-  color: var(--accent-text);
-  font-size: inherit;
-  font-weight: 600;
-  text-decoration: underline;
-  cursor: pointer;
+
+.cf-bulk-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--glass-border);
 }
+.cf-bulk-cta-text { font-size: 12px; color: var(--text-secondary); }
 
 .cf-field-pair, .cf-field-trio { display: grid; gap: 12px; }
 .cf-field-pair { grid-template-columns: 1fr 1fr; }
