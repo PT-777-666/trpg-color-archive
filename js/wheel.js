@@ -44,13 +44,30 @@
     return ColorUtils.clamp(size * 0.034, 15, 27);
   }
 
-  // 色相環の輪が六角形なので、外周までの距離は角度によって変わる
-  // (頂点方向ではradius、辺の中点方向では約0.866*radiusまでしかない)。
-  // その比率を返し、配置計算で「輪のすぐ内側」を正しく再現するために使う。
+  // 色相環の輪の形は、頂点/角の方向のほうが辺の中点方向より外側まで伸びる。
+  // その比率(0〜1に正規化、1.0が最も外側)を角度から返し、配置計算で
+  // 「輪のすぐ内側」を形に関わらず正しく再現するために使う。
+
   function hexBoundaryFraction(angleDeg) {
     const apothemRatio = Math.cos(Math.PI / 6); // 0.866...
     let t = ((angleDeg + 90) % 60 + 60) % 60 - 30;
     return apothemRatio / Math.cos((t * Math.PI) / 180);
+  }
+
+  // 軸に揃った(回転していない)正方形。辺の中点方向が最も近く、角(45°ずれ)が最も遠い。
+  function squareBoundaryFraction(angleDeg) {
+    const a = (angleDeg * Math.PI) / 180;
+    const raw = 1 / Math.max(Math.abs(Math.cos(a)), Math.abs(Math.sin(a))); // 1.0〜√2
+    return raw / Math.SQRT2;
+  }
+
+  function currentShape() {
+    const colors = global.ThemeManager ? global.ThemeManager.getThemeColors() : null;
+    return (colors && colors.shape) || 'hexagon';
+  }
+
+  function boundaryFraction(angleDeg) {
+    return currentShape() === 'square' ? squareBoundaryFraction(angleDeg) : hexBoundaryFraction(angleDeg);
   }
 
   function computeTargets(characters, size) {
@@ -61,7 +78,7 @@
       const { h, s } = ColorUtils.hexToHsl(c.color);
       const angleDeg = h - 90;
       const angleRad = (angleDeg * Math.PI) / 180;
-      const maxR = baseMaxR * hexBoundaryFraction(angleDeg);
+      const maxR = baseMaxR * boundaryFraction(angleDeg);
       const r = minR + (ColorUtils.clamp(s, 0, 100) / 100) * (maxR - minR);
       return {
         id: c.id,
@@ -108,7 +125,7 @@
         const ddx = n.x - cx, ddy = n.y - cy;
         const d = Math.hypot(ddx, ddy);
         const angleDeg = (Math.atan2(ddy, ddx) * 180) / Math.PI;
-        const maxAllowedR = maxAllowedRBase * hexBoundaryFraction(angleDeg);
+        const maxAllowedR = maxAllowedRBase * boundaryFraction(angleDeg);
         if (d > maxAllowedR) {
           const k = maxAllowedR / d;
           n.x = cx + ddx * k;
@@ -268,6 +285,17 @@
     ctx.closePath();
   }
 
+  // 紫電テーマの角丸スクエア用パス。rは正方形の半幅として扱う。
+  function roundedSquarePath(ctx, cx, cy, r, cornerR) {
+    ctx.beginPath();
+    ctx.roundRect(cx - r, cy - r, r * 2, r * 2, Math.min(cornerR, r));
+  }
+
+  function shapePath(ctx, cx, cy, r, cornerR) {
+    if (currentShape() === 'square') roundedSquarePath(ctx, cx, cy, r, cornerR);
+    else hexagonPath(ctx, cx, cy, r);
+  }
+
   function loadImageSafe(src) {
     return new Promise((resolve) => {
       if (!src) { resolve(null); return; }
@@ -322,7 +350,8 @@
     const theme = global.ThemeManager.getThemeColors();
     const { sat: wheelSat, light: wheelLight } = currentWheelTone();
     const bgVoid = theme.bgVoid;
-    const { r: vr, g: vg, b: vb } = ColorUtils.hexToRgb(bgVoid);
+    const wheelVoid = theme.wheelVoid || bgVoid;
+    const { r: vr, g: vg, b: vb } = ColorUtils.hexToRgb(wheelVoid);
     const cx = PAD_SIDE + EXPORT_SIZE / 2;
     const cy = PAD_TOP + EXPORT_SIZE / 2;
     const radius = EXPORT_SIZE / 2;
@@ -348,7 +377,7 @@
       conic.addColorStop(h / 360, `hsl(${h},${wheelSat}%,${wheelLight}%)`);
     });
     ctx.save();
-    hexagonPath(ctx, cx, cy, radius);
+    shapePath(ctx, cx, cy, radius, 40);
     ctx.fillStyle = conic;
     ctx.fill();
 
@@ -362,11 +391,16 @@
     ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
     ctx.restore();
 
-    // 環の輪郭を薄く
+    // 環の輪郭(紫電は太い黒枠、それ以外は薄い白のライン)
     ctx.save();
-    hexagonPath(ctx, cx, cy, radius);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    shapePath(ctx, cx, cy, radius, 40);
+    if (currentShape() === 'square') {
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#0a0a0a';
+    } else {
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    }
     ctx.stroke();
     ctx.restore();
 
@@ -378,8 +412,11 @@
       const y = cy - radius + n.y;
       const hex = ColorUtils.normalizeHex(c.color);
 
+      const isSquare = currentShape() === 'square';
+      const orbCornerR = orbR * 0.3;
+
       ctx.save();
-      hexagonPath(ctx, x, y, orbR);
+      shapePath(ctx, x, y, orbR, orbCornerR);
       ctx.clip();
 
       // object-fit: cover 相当のクロップ
@@ -389,16 +426,24 @@
       ctx.drawImage(img, sx, sy, side, side, x - orbR, y - orbR, orbR * 2, orbR * 2);
       ctx.restore();
 
-      // 背景色のリング + カラーの縁取り
-      hexagonPath(ctx, x, y, orbR + 1.5);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = bgVoid;
-      ctx.stroke();
+      if (isSquare) {
+        // 紫電は太い黒枠のみ(背景色のリングは使わない)
+        shapePath(ctx, x, y, orbR, orbCornerR);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#0a0a0a';
+        ctx.stroke();
+      } else {
+        // 背景色のリング + カラーの縁取り
+        shapePath(ctx, x, y, orbR + 1.5, orbCornerR);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = wheelVoid;
+        ctx.stroke();
 
-      hexagonPath(ctx, x, y, orbR);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = hex;
-      ctx.stroke();
+        shapePath(ctx, x, y, orbR, orbCornerR);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = hex;
+        ctx.stroke();
+      }
     });
 
     // 日付の透かし

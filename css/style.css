@@ -29,80 +29,63 @@
   --radius-lg: 22px;
   --radius-md: 14px;
   --radius-sm: 9px;
-  /* 色相環の輪・キャラアイコンで共有する六角形の切り抜き形状 */
+  /* 色相環の輪・キャラアイコンで共有する六角形の切り抜き形状(クレイ用) */
   --hex-clip: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
   --font-serif: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
   --font-sans: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+  /* 色相環の中心のフェード色。通常はページ背景と同じだが、
+     テーマによっては中心だけ別色にしたいので独立したトークンにする */
+  --wheel-void: var(--bg-void);
+  --wheel-void-rgb: var(--bg-void-rgb);
+  /* 背景(void)に直接乗る文字の色。通常は各テーマの本文色と同じだが、
+     紫電のようにvoid自体が濃い色のテーマでは白系に上書きする */
+  --title-on-void: var(--text-primary);
+  --label-on-void: var(--accent-text);
+  --body-on-void: var(--text-faint);
+  --secondary-on-void: var(--text-secondary);
 }
 
-/* ---- メイクパレット(ダーク)テーマ ----
- * コスメのアイシャドウパレット/コンパクトケースをイメージした、
- * ダーク×ローズゴールドの配色。トークンを丸ごと差し替えるだけで、
- * 個々のコンポーネントのCSSは共通のまま見た目が変わる。 */
-/* 銀夜(ぎんや) — 冷たい藍黒×プラチナシルバーの、静かな夜のテーマ。 */
-:root[data-theme="silver"] {
-  --bg-void: #14161f;
-  --bg-void-rgb: 20, 22, 31;
-  --bg-panel: #1c1f2b;
-  --bg-panel-raised: #242838;
-  --neutral-tint: 220, 228, 240;
-  --glass-fill: rgba(var(--neutral-tint), 0.05);
-  --glass-fill-strong: rgba(var(--neutral-tint), 0.09);
-  --glass-border: rgba(210, 220, 235, 0.14);
-  --text-primary: #e4e8f0;
-  --text-secondary: #a8b0c2;
-  --text-faint: #7d859c;
-  --accent: #b8c4d4;
-  --accent-text: #d3dce8;
-  --accent-soft: rgba(184, 196, 212, 0.20);
-  --accent-gradient-end: #8b98ab;
-  --btn-primary-text: #14161f;
-  --danger: #ff8a7a;
-  --danger-soft: rgba(255, 138, 122, 0.14);
+/* 紫電(しでん) — 紫の背景に黒ベタ枠とライムイエロー。Web3/NFTマーケットプレイス風の
+ * ネオブルータリズムなテーマ。柔らかい「クレイ」の立体感とは別物なので、
+ * --clay-raised系や角丸のトークンもこのテーマだけ丸ごと上書きしている。 */
+:root[data-theme="shiden"] {
+  --bg-void: #6C4DF5;
+  --bg-void-rgb: 108, 77, 245;
+  --bg-panel: #ffffff;
+  --bg-panel-raised: #ffffff;
+  --neutral-tint: 10, 10, 10;
+  --glass-fill: rgba(var(--neutral-tint), 0.04);
+  --glass-fill-strong: rgba(var(--neutral-tint), 0.08);
+  --glass-border: #0a0a0a;
+  --text-primary: #0a0a0a;
+  --text-secondary: #4a4a4a;
+  --text-faint: #737373;
+  --accent: #D4FF3D;
+  --accent-text: #6C4DF5;
+  --accent-soft: rgba(108, 77, 245, 0.14);
+  --accent-gradient-end: #D4FF3D;
+  --btn-primary-text: #0a0a0a;
+  --danger: #d92b2b;
+  --danger-soft: #ffe5e5;
   --shadow-tint: 0, 0, 0;
-  --highlight-tint: 220, 228, 240;
-  --blob-blend: screen;
-  --shadow-deep: 0 20px 55px rgba(0, 0, 0, 0.45);
-}
-
-/* 蛍(ほたる) — 深い闇に浮かぶ蛍光グリーンの光をイメージした、ネオン系のテーマ。
- * ボタンやタグの縁にだけ発光をのせ、本文の文字は淡いミントで読みやすさを保つ。 */
-:root[data-theme="hotaru"] {
-  --bg-void: #080d0a;
-  --bg-void-rgb: 8, 13, 10;
-  --bg-panel: #0f1a13;
-  --bg-panel-raised: #142219;
-  --neutral-tint: 170, 255, 200;
-  --glass-fill: rgba(var(--neutral-tint), 0.05);
-  --glass-fill-strong: rgba(var(--neutral-tint), 0.09);
-  --glass-border: rgba(150, 255, 190, 0.16);
-  --text-primary: #eafaf1;
-  --text-secondary: #9fd6b4;
-  --text-faint: #74a888;
-  --accent: #39ff8f;
-  --accent-text: #39ff8f;
-  --accent-soft: rgba(57, 255, 143, 0.16);
-  --accent-gradient-end: #1fa860;
-  --btn-primary-text: #04140a;
-  --danger: #ff5c5c;
-  --danger-soft: rgba(255, 92, 92, 0.14);
-  --shadow-tint: 0, 0, 0;
-  --highlight-tint: 80, 255, 160;
-  --blob-blend: screen;
-  --shadow-deep: 0 20px 55px rgba(0, 0, 0, 0.55), 0 0 40px rgba(57, 255, 143, 0.08);
-  /* ボタン等の立体感トークンもこのテーマだけ上書きし、緑の発光を足す */
-  --clay-raised:
-    0 0 10px rgba(57, 255, 143, 0.25),
-    4px 6px 14px rgba(var(--shadow-tint), 0.45),
-    inset 1px 1px 1px rgba(var(--highlight-tint), 0.12);
-  --clay-raised-hover:
-    0 0 16px rgba(57, 255, 143, 0.4),
-    5px 8px 17px rgba(var(--shadow-tint), 0.5),
-    inset 1px 1px 1px rgba(var(--highlight-tint), 0.16);
-  --clay-pressed:
-    inset 0 0 10px rgba(57, 255, 143, 0.25),
-    inset 3px 4px 9px rgba(var(--shadow-tint), 0.5),
-    inset -1px -1px 3px rgba(var(--highlight-tint), 0.1);
+  --highlight-tint: 0, 0, 0;
+  --blob-blend: soft-light;
+  --shadow-deep: 8px 8px 0 #0a0a0a;
+  --radius-lg: 10px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
+  /* 色相環の中心は白に固定(背景の紫とは別) */
+  --wheel-void: #ffffff;
+  --wheel-void-rgb: 255, 255, 255;
+  /* 紫の背景に直接乗る文字は白系にする(黒だとコントラスト不足) */
+  --title-on-void: #ffffff;
+  --label-on-void: #ffffff;
+  --body-on-void: #f3f0ff;
+  --secondary-on-void: #f3f0ff;
+  /* ボタン等の立体感トークンを、ぼかしのないハードシャドウに丸ごと差し替える */
+  --clay-raised: 4px 4px 0 #0a0a0a;
+  --clay-raised-hover: 6px 6px 0 #0a0a0a;
+  --clay-pressed: 0 0 0 #0a0a0a;
 }
 
 * { box-sizing: border-box; }
@@ -222,12 +205,12 @@ a { color: var(--accent-text); }
   font-size: clamp(20px, 2.6vw, 30px);
   margin: 0;
   letter-spacing: 0.03em;
-  color: var(--text-primary);
+  color: var(--title-on-void);
 }
 
 .app-usage-label {
   margin: 10px 0 0;
-  color: var(--accent-text);
+  color: var(--label-on-void);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -235,7 +218,7 @@ a { color: var(--accent-text); }
 
 .app-usage-hint {
   margin: 4px 0 0;
-  color: var(--text-faint);
+  color: var(--body-on-void);
   font-size: 11.5px;
   line-height: 1.7;
   white-space: nowrap;
@@ -260,10 +243,10 @@ a { color: var(--accent-text); }
   margin-top: 10px;
   border-top: 1px solid var(--glass-border);
   font-size: 12px;
-  color: var(--text-faint);
+  color: var(--body-on-void);
 }
 
-.stats-bar { color: var(--text-secondary); }
+.stats-bar { color: var(--secondary-on-void); }
 
 /* ---------- ボタン共通(粘土風の柔らかい立体感) ---------- */
 
@@ -442,7 +425,7 @@ a { color: var(--accent-text); }
   position: absolute;
   inset: 0;
   clip-path: var(--hex-clip);
-  background: radial-gradient(circle at center, var(--bg-void) 0%, var(--bg-void) 8%, rgba(var(--bg-void-rgb), 0.88) 20%, rgba(var(--bg-void-rgb), 0.42) 34%, transparent 46%);
+  background: radial-gradient(circle at center, var(--wheel-void) 0%, var(--wheel-void) 8%, rgba(var(--wheel-void-rgb), 0.88) 20%, rgba(var(--wheel-void-rgb), 0.42) 34%, transparent 46%);
 }
 
 .wheel-rings-deco {
@@ -528,7 +511,7 @@ a { color: var(--accent-text); }
   flex-direction: column;
   gap: 14px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--secondary-on-void);
 }
 .empty-state.is-visible { display: flex; }
 
@@ -1036,6 +1019,77 @@ a { color: var(--accent-text); }
   margin-top: 24px;
   padding-top: 16px;
   border-top: 1px solid var(--glass-border);
+}
+
+/* ---------- 紫電テーマ専用の構造上書き ----------
+ * 六角形のclip-pathをやめて角丸スクエアにし、ボタンやカードには
+ * 太めの黒枠を足す。色トークンだけでは表現できない部分をここでまとめる。 */
+
+:root[data-theme="shiden"] .wheel-ring,
+:root[data-theme="shiden"] .wheel-void,
+:root[data-theme="shiden"] .wheel-rings-deco {
+  clip-path: none;
+  border-radius: 10px;
+}
+:root[data-theme="shiden"] .wheel-ring {
+  filter: none;
+  border: 3px solid #0a0a0a;
+  box-shadow: 6px 6px 0 #0a0a0a;
+}
+:root[data-theme="shiden"] .orb-img {
+  clip-path: none;
+  border-radius: 8px;
+  border: 2.5px solid #0a0a0a;
+  filter: none;
+  box-shadow: 3px 3px 0 #0a0a0a;
+}
+:root[data-theme="shiden"] .orb:hover .orb-img,
+:root[data-theme="shiden"] .orb:focus-visible .orb-img {
+  filter: none;
+  box-shadow: 5px 5px 0 #0a0a0a;
+}
+@media (hover: none) {
+  :root[data-theme="shiden"] .orb:hover .orb-img { box-shadow: 3px 3px 0 #0a0a0a; }
+}
+
+:root[data-theme="shiden"] .btn {
+  border: 2.5px solid #0a0a0a;
+  border-radius: 8px;
+}
+:root[data-theme="shiden"] .tag-pill,
+:root[data-theme="shiden"] .tag-chip {
+  border: 2px solid #0a0a0a;
+}
+:root[data-theme="shiden"] .tag-pill-active {
+  background: var(--accent);
+  color: #0a0a0a;
+}
+
+:root[data-theme="shiden"] .hover-card,
+:root[data-theme="shiden"] .dm-panel,
+:root[data-theme="shiden"] .cf-panel,
+:root[data-theme="shiden"] .bi-panel {
+  border-radius: 12px;
+  border: 2.5px solid #0a0a0a;
+  border-top: 2.5px solid #0a0a0a;
+}
+
+:root[data-theme="shiden"] .hc-avatar,
+:root[data-theme="shiden"] .bi-avatar {
+  border-radius: 8px;
+  border-color: #0a0a0a;
+}
+:root[data-theme="shiden"] .dm-avatar {
+  border-radius: 10px;
+  border: 3px solid #0a0a0a;
+}
+:root[data-theme="shiden"] .cf-image-preview {
+  border-radius: 10px;
+  border: 2px solid #0a0a0a;
+}
+:root[data-theme="shiden"] .cf-color-preview {
+  border-radius: 8px;
+  border: 2px solid #0a0a0a;
 }
 
 /* ---------- レスポンシブ ---------- */

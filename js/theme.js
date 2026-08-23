@@ -19,27 +19,22 @@
       wheelSat: 77,
       wheelLight: 71,
       bgVoid: '#faf6ef',
+      wheelVoid: '#faf6ef',
       textPrimary: '#3d362c',
       accentText: '#906130',
-      textFaint: '#8f8371'
+      textFaint: '#8f8371',
+      shape: 'hexagon'
     },
-    silver: {
-      label: '銀夜',
-      wheelSat: 82,
-      wheelLight: 55,
-      bgVoid: '#14161f',
-      textPrimary: '#e4e8f0',
-      accentText: '#d3dce8',
-      textFaint: '#7d859c'
-    },
-    hotaru: {
-      label: '蛍',
-      wheelSat: 85,
-      wheelLight: 55,
-      bgVoid: '#080d0a',
-      textPrimary: '#eafaf1',
-      accentText: '#39ff8f',
-      textFaint: '#74a888'
+    shiden: {
+      label: '紫電',
+      wheelSat: 80,
+      wheelLight: 62,
+      bgVoid: '#6C4DF5',
+      wheelVoid: '#ffffff',
+      textPrimary: '#ffffff',
+      accentText: '#ffffff',
+      textFaint: '#f3f0ff',
+      shape: 'square'
     }
   };
 
