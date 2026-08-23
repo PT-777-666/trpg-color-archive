@@ -41,6 +41,8 @@
   --label-on-void: var(--accent-text);
   --body-on-void: var(--text-faint);
   --secondary-on-void: var(--text-secondary);
+  /* 背景にうっすら方眼を敷く(試験導入)。目立たない程度の薄さに留める */
+  --grid-line: rgba(61, 54, 44, 0.05);
 }
 
 /* ビビッド — 紫の背景に黒ベタ枠とライムイエロー。Web3/NFTマーケットプレイス風の
@@ -83,6 +85,7 @@
   --clay-raised: 4px 4px 0 #0a0a0a;
   --clay-raised-hover: 6px 6px 0 #0a0a0a;
   --clay-pressed: 0 0 0 #0a0a0a;
+  --grid-line: rgba(255, 255, 255, 0.10);
 }
 
 * { box-sizing: border-box; }
@@ -98,6 +101,10 @@ html, body {
 
 body {
   background: var(--bg-void);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
   min-height: 100vh;
   overflow-x: hidden;
 }
