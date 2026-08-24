@@ -426,13 +426,12 @@
       // オーブの下に、キャラクターの色のやわらかい光彩を敷く
       // (ライブ表示の.orb-glowと同じ。ビビッドはフラットな見た目が基調なので描かない)
       if (!isSquare) {
-        const glowR = orbR * 1.35;
+        const glowR = orbR * 1.7;
         ctx.save();
         ctx.globalAlpha = 0.22;
         const glowGrad = ctx.createRadialGradient(x, y, 0, x, y, glowR);
         glowGrad.addColorStop(0, hex);
-        glowGrad.addColorStop(0.68, hex);
-        glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        glowGrad.addColorStop(0.68, 'rgba(0,0,0,0)');
         ctx.beginPath();
         ctx.arc(x, y, glowR, 0, Math.PI * 2);
         ctx.fillStyle = glowGrad;
@@ -470,20 +469,6 @@
         ctx.lineWidth = 3;
         ctx.strokeStyle = theme.bgPanel;
         ctx.stroke();
-
-        // リングのすぐ外側に、キャラクターの色のタイトなぼかし
-        // (ライブ表示のbox-shadow 0 0 16px -3px var(--orb-color) 相当。
-        // ぼかしのないstrokeだけだと縁取りが平坦で、離れて敷いた.orb-glow
-        // だけでは色が抜けて灰色っぽく見えてしまうため、リングの直近を
-        // 縁の色でぼかして「暗い縁取り」の実物に近づける)
-        ctx.save();
-        ctx.shadowColor = hex;
-        ctx.shadowBlur = 16;
-        shapePath(ctx, x, y, orbR, orbCornerR);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = hex;
-        ctx.stroke();
-        ctx.restore();
       }
     });
 

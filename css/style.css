@@ -558,10 +558,7 @@ a { color: var(--accent-text); }
   object-fit: cover;
   display: block;
   border: 2px solid var(--orb-color, #999);
-  box-shadow:
-    0 0 0 3px var(--bg-panel),
-    0 4px 12px rgba(var(--shadow-tint), 0.22),
-    0 0 16px -3px var(--orb-color, transparent);
+  box-shadow: 0 0 0 3px var(--bg-panel);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   background: var(--orb-color, #f2ece0);
 }
@@ -580,10 +577,7 @@ a { color: var(--accent-text); }
 .orb:focus-visible .orb-img {
   transform: translateY(-5px) scale(1.18);
   transition: transform 0.5s cubic-bezier(0.34, 1.76, 0.64, 1), box-shadow 0.25s ease;
-  box-shadow:
-    0 0 0 3px var(--bg-panel),
-    0 6px 18px rgba(var(--shadow-tint), 0.28),
-    0 0 22px 0px var(--orb-color, transparent);
+  box-shadow: 0 0 0 3px var(--bg-panel);
 }
 .orb:hover .orb-glow,
 .orb:focus-visible .orb-glow { opacity: 0.45; }
@@ -1471,6 +1465,13 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
   box-shadow: var(--clay-pressed);
   transform: translateY(1px);
 }
+/* パステルの.btn:disabledはopacityで薄く見せて「淡い」演出になじむが、
+   ビビッドは色や枠線がくっきり出ているのが基調なので、同じopacityを
+   使うと背景が透けて見えてしまう。ビビッドでは薄くせず、カーソルの
+   変化だけで読み込み中と分かるようにする */
+:root[data-theme="vivid"] .btn:disabled {
+  opacity: 1;
+}
 /* 光沢ハイライトはパステルの艶っぽい方向性向けの演出なので、
    フラットな面を基調とするビビッドのネオブルータリズムには入れない */
 :root[data-theme="vivid"] .btn-primary::before {
@@ -1480,8 +1481,11 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
    ビビッドの脇役ボタン(バックアップ保存など)は影を消すと周りのハード
    シャドウ表現から浮いて「透けて」見えてしまうため、影は他のボタンと
    揃えたまま維持する(破壊的操作だけ枠色で見分ける) */
+/* rgba単体だとbackgroundを丸ごと置き換えてしまい、ボタンの地の白が
+   消えてページの背景が透けて見えてしまう。白を下地に敷いた上に
+   薄い黒を重ねるレイヤー指定にして、不透明さを保ったまま色味だけ変える */
 :root[data-theme="vivid"] .btn-ghost:hover {
-  background: rgba(10, 10, 10, 0.06);
+  background: linear-gradient(rgba(10, 10, 10, 0.06), rgba(10, 10, 10, 0.06)), var(--bg-panel);
 }
 :root[data-theme="vivid"] .btn-danger {
   border-color: var(--danger);
@@ -1661,9 +1665,6 @@ textarea.lv-detail-input { font-family: inherit; line-height: 1.6; }
 
 /* タッチデバイスではhoverによる強調を無効化し、tapのみで反応させる */
 @media (hover: none) {
-  .orb:hover .orb-img { transform: none; box-shadow:
-      0 0 0 3px var(--bg-panel),
-      0 4px 12px rgba(var(--shadow-tint), 0.22),
-      0 0 16px -3px var(--orb-color, transparent); }
+  .orb:hover .orb-img { transform: none; box-shadow: 0 0 0 3px var(--bg-panel); }
   .orb:hover .orb-glow { opacity: 0.22; }
 }
