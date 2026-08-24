@@ -523,8 +523,7 @@ a { color: var(--accent-text); }
   filter: saturate(0.95) brightness(1.02);
   box-shadow:
     0 0 0 1px rgba(var(--highlight-tint), 0.7),
-    0 25px 55px rgba(var(--shadow-tint), 0.20),
-    inset 0 0 45px rgba(var(--highlight-tint), 0.55);
+    0 25px 55px rgba(var(--shadow-tint), 0.20);
 }
 
 .wheel-void {
