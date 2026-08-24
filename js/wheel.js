@@ -443,10 +443,12 @@
         ctx.strokeStyle = '#0a0a0a';
         ctx.stroke();
       } else {
-        // 背景色のリング + カラーの縁取り
+        // 白パネル色のリング + カラーの縁取り(ライブ表示の.orb-imgの
+        // box-shadow 0 0 0 3px var(--bg-panel) と同じ。wheel-void(中心の
+        // フェード色)とは別のトークンなので取り違えないよう注意)
         shapePath(ctx, x, y, orbR + 1.5, orbCornerR);
         ctx.lineWidth = 3;
-        ctx.strokeStyle = wheelVoid;
+        ctx.strokeStyle = theme.bgPanel;
         ctx.stroke();
 
         shapePath(ctx, x, y, orbR, orbCornerR);
