@@ -341,14 +341,39 @@
     });
     ctx.save();
     shapePath(ctx, cx, cy, radius, 40);
+    // ライブ表示の.wheel-ringはfilter: saturate(0.95) brightness(1.02)を
+    // かけているので、書き出しでも同じ色味になるよう揃える
+    ctx.filter = 'saturate(0.95) brightness(1.02)';
+    // ライブ表示の.wheel-ringの立体感(box-shadow)相当。ビビッドは太い
+    // オフセット影、それ以外はやわらかいドロップシャドウにする
+    if (currentShape() === 'square') {
+      ctx.shadowColor = '#0a0a0a';
+      ctx.shadowOffsetX = 6;
+      ctx.shadowOffsetY = 6;
+      ctx.shadowBlur = 0;
+    } else {
+      ctx.shadowColor = 'rgba(120,95,60,0.20)';
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 25;
+      ctx.shadowBlur = 55;
+    }
     ctx.fillStyle = conic;
     ctx.fill();
+    ctx.filter = 'none';
+    ctx.shadowColor = 'transparent';
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur = 0;
 
-    // 中心が晴れていくような、背景色へのフェード
-    const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.46);
+    // 中心が晴れていくような、背景色へのフェード。ライブ表示の.wheel-voidは
+    // 「circle at center」の既定サイズ(farthest-corner = radius*√2)を基準に
+    // 0/8/20/34/46%の位置に色停止点を置いているので、そのままの縮尺で揃える
+    const voidMaxR = radius * Math.SQRT2 * 0.46;
+    const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, voidMaxR);
     voidGrad.addColorStop(0, `rgba(${vr},${vg},${vb},1)`);
-    voidGrad.addColorStop(0.17, `rgba(${vr},${vg},${vb},1)`);
-    voidGrad.addColorStop(0.43, `rgba(${vr},${vg},${vb},0.42)`);
+    voidGrad.addColorStop(0.08 / 0.46, `rgba(${vr},${vg},${vb},1)`);
+    voidGrad.addColorStop(0.20 / 0.46, `rgba(${vr},${vg},${vb},0.88)`);
+    voidGrad.addColorStop(0.34 / 0.46, `rgba(${vr},${vg},${vb},0.42)`);
     voidGrad.addColorStop(1, `rgba(${vr},${vg},${vb},0)`);
     ctx.fillStyle = voidGrad;
     ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
