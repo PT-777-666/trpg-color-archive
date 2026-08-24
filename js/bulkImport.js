@@ -30,7 +30,7 @@
       const img = c.image || global.Avatar.placeholderDataUri(hex, c.name);
       return `
         <div class="bi-row" data-id="${c.id}">
-          <img class="bi-avatar" src="${img}" alt="" style="--orb-color:${hex}" />
+          <img class="bi-avatar" src="${Utils.escapeHtml(img)}" alt="" style="--orb-color:${hex}" />
           <div class="bi-info">
             <div class="bi-name">${Utils.escapeHtml(c.name || '無名のキャラクター')}</div>
             <div class="bi-sub">${Utils.escapeHtml(c.occupation || '')}${c.occupation && c.age ? ' / ' : ''}${Utils.escapeHtml(c.age || '')}</div>

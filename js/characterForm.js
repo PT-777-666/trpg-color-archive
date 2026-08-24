@@ -59,7 +59,7 @@
   function renderImagePreview() {
     const preview = formEl.querySelector('#cf-image-preview');
     if (draftImage) {
-      preview.innerHTML = `<img src="${draftImage}" alt="プレビュー" />`;
+      preview.innerHTML = `<img src="${Utils.escapeHtml(draftImage)}" alt="プレビュー" />`;
     } else {
       preview.innerHTML = `<div class="cf-image-empty">画像未設定<br><small>カラーからプレースホルダーを生成します</small></div>`;
     }

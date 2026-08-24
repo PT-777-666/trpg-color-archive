@@ -23,7 +23,7 @@
     cardEl.style.setProperty('--hc-color', hex);
     cardEl.innerHTML = `
       <div class="hc-header">
-        <img class="hc-avatar" src="${img}" alt="" />
+        <img class="hc-avatar" src="${Utils.escapeHtml(img)}" alt="" />
         <div class="hc-heading">
           <div class="hc-name">${Utils.escapeHtml(character.name || '無名のキャラクター')}</div>
           <div class="hc-sub">${Utils.escapeHtml(character.system || '')}</div>

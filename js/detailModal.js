@@ -30,7 +30,7 @@
       <button type="button" class="dm-close" aria-label="閉じる">×</button>
       <div class="dm-content">
         <div class="dm-visual">
-          <img class="dm-avatar" src="${img}" alt="" />
+          <img class="dm-avatar" src="${Utils.escapeHtml(img)}" alt="" />
           <div class="dm-color-chip" title="${hex}">
             <span class="dm-color-swatch"></span>${hex}
           </div>
