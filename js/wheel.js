@@ -65,14 +65,11 @@
     const minR = size / 2 * 0.10;
     return characters.map((c) => {
       const { h, s } = ColorUtils.hexToHsl(c.color);
-      const angleDeg = h - 90;
-      const angleRad = (angleDeg * Math.PI) / 180;
+      const angleRad = (ColorUtils.hueToAngle(h) * Math.PI) / 180;
       const satFrac = ColorUtils.clamp(s, 0, 100) / 100;
       const r = minR + satFrac * (baseMaxR - minR);
       return {
         id: c.id,
-        tx: cx + r * Math.cos(angleRad),
-        ty: cy + r * Math.sin(angleRad),
         x: cx + r * Math.cos(angleRad),
         y: cy + r * Math.sin(angleRad)
       };

@@ -92,6 +92,17 @@
     return luminance > 0.6;
   }
 
+  // 色相環(wheel.js)とカラーホイール(colorWheel.js)で共有する角度⇄色相の変換。
+  // 0度(赤)を12時方向に置き、時計回りに色相が進む向きで揃えている。
+  function hueToAngle(h) {
+    return h - 90;
+  }
+
+  function angleToHue(angleDeg) {
+    const h = angleDeg + 90;
+    return ((h % 360) + 360) % 360;
+  }
+
   global.ColorUtils = {
     clamp,
     normalizeHex,
@@ -101,6 +112,8 @@
     hslToRgb,
     hslToHex,
     rgbStringToHex,
-    isLight
+    isLight,
+    hueToAngle,
+    angleToHue
   };
 })(window);

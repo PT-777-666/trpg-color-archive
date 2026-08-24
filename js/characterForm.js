@@ -306,15 +306,13 @@
     });
 
     const colorHex = formEl.querySelector('#cf-color-hex');
+    const syncColorFromWheel = (hex) => {
+      colorHex.value = hex;
+      updateColorPreview();
+    };
     colorWheel = ColorWheel.create(formEl.querySelector('#cf-color-wheel'), {
-      onChange: (hex) => {
-        colorHex.value = hex;
-        updateColorPreview();
-      },
-      onCommit: (hex) => {
-        colorHex.value = hex;
-        updateColorPreview();
-      }
+      onChange: syncColorFromWheel,
+      onCommit: syncColorFromWheel
     });
     colorHex.addEventListener('input', updateColorPreview);
     colorHex.addEventListener('change', () => {

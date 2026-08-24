@@ -9,15 +9,6 @@
   const SIZE = 120;
   const RADIUS = SIZE / 2;
 
-  function angleToHue(angleDeg) {
-    const h = angleDeg + 90;
-    return ((h % 360) + 360) % 360;
-  }
-
-  function hueToAngle(h) {
-    return h - 90;
-  }
-
   function drawDisc(canvas, lightness) {
     const ctx = canvas.getContext('2d');
     const img = ctx.createImageData(SIZE, SIZE);
@@ -31,7 +22,7 @@
           continue;
         }
         const angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
-        const h = angleToHue(angleDeg);
+        const h = ColorUtils.angleToHue(angleDeg);
         const s = ColorUtils.clamp((r / RADIUS) * 100, 0, 100);
         const rgb = ColorUtils.hslToRgb(h, s, lightness);
         img.data[idx] = rgb.r;
@@ -70,7 +61,7 @@
     const lSlider = container.querySelector('.color-wheel-l-slider');
 
     function moveCursor() {
-      const angleRad = (hueToAngle(h) * Math.PI) / 180;
+      const angleRad = (ColorUtils.hueToAngle(h) * Math.PI) / 180;
       const r = (s / 100) * RADIUS;
       cursor.style.left = (RADIUS + r * Math.cos(angleRad)) + 'px';
       cursor.style.top = (RADIUS + r * Math.sin(angleRad)) + 'px';
@@ -98,7 +89,7 @@
       const dx = x - RADIUS, dy = y - RADIUS;
       const r = ColorUtils.clamp(Math.sqrt(dx * dx + dy * dy), 0, RADIUS);
       const angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
-      return { h: angleToHue(angleDeg), s: (r / RADIUS) * 100 };
+      return { h: ColorUtils.angleToHue(angleDeg), s: (r / RADIUS) * 100 };
     }
 
     let dragging = false;

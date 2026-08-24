@@ -68,7 +68,10 @@
 
   // 色相環の並びと揃うよう、色相(H)の昇順で並べる(0度=赤が先頭、時計回りの順)
   function byHue(characters) {
-    return characters.slice().sort((a, b) => ColorUtils.hexToHsl(a.color).h - ColorUtils.hexToHsl(b.color).h);
+    return characters
+      .map((c) => ({ c, h: ColorUtils.hexToHsl(c.color).h }))
+      .sort((a, b) => a.h - b.h)
+      .map((entry) => entry.c);
   }
 
   function byName(characters) {
