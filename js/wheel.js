@@ -316,6 +316,10 @@
     const cx = PAD_SIDE + EXPORT_SIZE / 2;
     const cy = PAD_TOP + EXPORT_SIZE / 2;
     const radius = EXPORT_SIZE / 2;
+    // ライブ表示のビビッド用.wheel-ringはborder-radius: 10px(固定px)。
+    // wheel-stageの最大幅760px(半径380px)を基準に、書き出しの半径に
+    // 比例換算する(そのまま40pxを使うと実物より丸まりすぎてしまう)
+    const wheelCornerR = radius * (10 / 380);
 
     // 背景(テーマの下地色)。透過指定時はここを塗らず、キャンバスの初期状態(透明)のままにする
     if (!transparent) {
@@ -340,7 +344,7 @@
       conic.addColorStop(h / 360, `hsl(${h},${wheelSat}%,${wheelLight}%)`);
     });
     ctx.save();
-    shapePath(ctx, cx, cy, radius, 40);
+    shapePath(ctx, cx, cy, radius, wheelCornerR);
     // ライブ表示の.wheel-ringはfilter: saturate(0.95) brightness(1.02)を
     // かけているので、書き出しでも同じ色味になるよう揃える
     ctx.filter = 'saturate(0.95) brightness(1.02)';
@@ -381,7 +385,7 @@
 
     // 環の輪郭(ビビッドは太い黒枠、それ以外は薄い白のライン)
     ctx.save();
-    shapePath(ctx, cx, cy, radius, 40);
+    shapePath(ctx, cx, cy, radius, wheelCornerR);
     if (currentShape() === 'square') {
       ctx.lineWidth = 6;
       ctx.strokeStyle = '#0a0a0a';
@@ -402,6 +406,22 @@
 
       const isSquare = currentShape() === 'square';
       const orbCornerR = orbR * 0.3;
+
+      // ビビッドの.orb-imgはbox-shadow: 3px 3px 0 #0a0a0aという
+      // ハードシャドウを持つ。box-shadowは要素の塗り形状全体に落ちるので、
+      // 画像を描く前に同じ形を一度塗ってシャドウだけ落としておく
+      // (この塗り自体は後で画像に完全に覆われるので色は何でもよい)
+      if (isSquare) {
+        ctx.save();
+        ctx.shadowColor = '#0a0a0a';
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+        ctx.shadowBlur = 0;
+        shapePath(ctx, x, y, orbR, orbCornerR);
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fill();
+        ctx.restore();
+      }
 
       // オーブの下に、キャラクターの色のやわらかい光彩を敷く
       // (ライブ表示の.orb-glowと同じ。ビビッドはフラットな見た目が基調なので描かない)
