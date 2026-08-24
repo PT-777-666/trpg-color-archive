@@ -382,6 +382,11 @@
       shapePath(ctx, x, y, orbR, orbCornerR);
       ctx.clip();
 
+      // 画像に透明な部分があってもキャラクターの色が背景として見えるようにする
+      // (ライブ表示の.orb-img { background: var(--orb-color) } と同じ挙動)
+      ctx.fillStyle = hex;
+      ctx.fillRect(x - orbR, y - orbR, orbR * 2, orbR * 2);
+
       // object-fit: cover 相当のクロップ
       const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
       const side = Math.min(iw, ih);
