@@ -462,6 +462,26 @@ a { color: var(--accent-text); }
   padding: 22px 0 12px;
 }
 
+.orb-size-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  font-size: 12px;
+  color: var(--body-on-void);
+}
+.orb-size-control label { white-space: nowrap; }
+.orb-size-control input[type="range"] {
+  width: min(220px, 50vw);
+  accent-color: var(--accent);
+}
+.orb-size-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 3.5em;
+  color: var(--secondary-on-void);
+}
+
 .view-toggle-large {
   padding: 6px;
   gap: 6px;

@@ -46,8 +46,26 @@
     return `conic-gradient(from 0deg, ${stops.join(', ')})`;
   }
 
+  // アイコン(オーブ)サイズはスライダーで手元調整できるようにする。
+  // 表示サイズはwheel-stageの大きさに応じた自動計算(size*0.034、15〜27pxの範囲)を
+  // 基準に、この倍率(50%〜200%)を掛けて使う。値はブラウザに記憶させておく。
+  const ORB_SIZE_STORAGE_KEY = 'orbSizeMultiplier';
+  const ORB_SIZE_MIN = 0.5, ORB_SIZE_MAX = 2;
+  let orbSizeMultiplier = ColorUtils.clamp(Number(localStorage.getItem(ORB_SIZE_STORAGE_KEY)) || 1, ORB_SIZE_MIN, ORB_SIZE_MAX);
+
   function orbRadiusFor(size) {
-    return ColorUtils.clamp(size * 0.034, 15, 27);
+    const base = ColorUtils.clamp(size * 0.034, 15, 27);
+    return ColorUtils.clamp(base * orbSizeMultiplier, 8, 54);
+  }
+
+  function getOrbSizeMultiplier() {
+    return orbSizeMultiplier;
+  }
+
+  function setOrbSizeMultiplier(mult) {
+    orbSizeMultiplier = ColorUtils.clamp(mult, ORB_SIZE_MIN, ORB_SIZE_MAX);
+    localStorage.setItem(ORB_SIZE_STORAGE_KEY, orbSizeMultiplier);
+    rebuild();
   }
 
   function currentShape() {
@@ -408,5 +426,5 @@
     });
   }
 
-  global.Wheel = { mount, rebuild, updateFilterVisuals, exportImage };
+  global.Wheel = { mount, rebuild, updateFilterVisuals, exportImage, getOrbSizeMultiplier, setOrbSizeMultiplier };
 })(window);

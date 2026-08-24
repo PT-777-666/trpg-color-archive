@@ -59,10 +59,12 @@
     const listViewBtn = document.getElementById('btn-view-list');
     const wheelStage = document.getElementById('wheel-stage');
     const wheelMain = document.querySelector('.wheel-main');
+    const orbSizeControl = document.getElementById('orb-size-control');
     function setListActive(active) {
       wheelMain.classList.toggle('list-active', active);
       wheelStage.hidden = active;
       document.getElementById('list-view').hidden = !active;
+      orbSizeControl.hidden = active;
       wheelViewBtn.classList.toggle('mode-btn-active', !active);
       listViewBtn.classList.toggle('mode-btn-active', active);
       if (active) {
@@ -78,6 +80,15 @@
     }
     wheelViewBtn.addEventListener('click', () => setListActive(false));
     listViewBtn.addEventListener('click', () => setListActive(true));
+
+    const orbSizeSlider = document.getElementById('orb-size-slider');
+    const orbSizeValue = document.getElementById('orb-size-value');
+    orbSizeSlider.value = Math.round(Wheel.getOrbSizeMultiplier() * 100);
+    orbSizeValue.textContent = `${orbSizeSlider.value}%`;
+    orbSizeSlider.addEventListener('input', () => {
+      orbSizeValue.textContent = `${orbSizeSlider.value}%`;
+      Wheel.setOrbSizeMultiplier(Number(orbSizeSlider.value) / 100);
+    });
   }
 
   function renderThemeSwitcher() {
