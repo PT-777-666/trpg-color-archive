@@ -443,7 +443,7 @@
         ctx.strokeStyle = '#0a0a0a';
         ctx.stroke();
       } else {
-        // 白パネル色のリング + カラーの縁取り(ライブ表示の.orb-imgの
+        // 白パネル色のリング(ライブ表示の.orb-imgの
         // box-shadow 0 0 0 3px var(--bg-panel) と同じ。wheel-void(中心の
         // フェード色)とは別のトークンなので取り違えないよう注意)
         shapePath(ctx, x, y, orbR + 1.5, orbCornerR);
@@ -451,10 +451,19 @@
         ctx.strokeStyle = theme.bgPanel;
         ctx.stroke();
 
+        // リングのすぐ外側に、キャラクターの色のタイトなぼかし
+        // (ライブ表示のbox-shadow 0 0 16px -3px var(--orb-color) 相当。
+        // ぼかしのないstrokeだけだと縁取りが平坦で、離れて敷いた.orb-glow
+        // だけでは色が抜けて灰色っぽく見えてしまうため、リングの直近を
+        // 縁の色でぼかして「暗い縁取り」の実物に近づける)
+        ctx.save();
+        ctx.shadowColor = hex;
+        ctx.shadowBlur = 16;
         shapePath(ctx, x, y, orbR, orbCornerR);
         ctx.lineWidth = 2;
         ctx.strokeStyle = hex;
         ctx.stroke();
+        ctx.restore();
       }
     });
 
