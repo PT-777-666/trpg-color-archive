@@ -378,6 +378,23 @@
       const isSquare = currentShape() === 'square';
       const orbCornerR = orbR * 0.3;
 
+      // オーブの下に、キャラクターの色のやわらかい光彩を敷く
+      // (ライブ表示の.orb-glowと同じ。ビビッドはフラットな見た目が基調なので描かない)
+      if (!isSquare) {
+        const glowR = orbR * 1.35;
+        ctx.save();
+        ctx.globalAlpha = 0.22;
+        const glowGrad = ctx.createRadialGradient(x, y, 0, x, y, glowR);
+        glowGrad.addColorStop(0, hex);
+        glowGrad.addColorStop(0.68, hex);
+        glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(x, y, glowR, 0, Math.PI * 2);
+        ctx.fillStyle = glowGrad;
+        ctx.fill();
+        ctx.restore();
+      }
+
       ctx.save();
       shapePath(ctx, x, y, orbR, orbCornerR);
       ctx.clip();
